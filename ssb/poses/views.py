@@ -10,21 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 class ViewPoses(generic.ListView):
+    model = Pose
     template_name = 'poses/view_poses.html'
-    context_object_name = 'latest_question_list'
-
-    def get_queryset(self):
-        return Pose.objects.all()
 
 
 def create_pose(request):
-    logger.info("CREATE POSE VIEW")
-    logger.info(request.POST)
     form = PoseForm(request.POST or None)
 
     if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
-        logger.info("GOT TO POST")
-
         if form.is_valid():
             form.save()
             form = PoseForm(None)
