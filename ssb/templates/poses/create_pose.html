@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h3>Add a Pose</h3>
+
+  <form id="pose-form" class="form-horizontal" method="POST">
+      {% crispy form %}
+  </form>
+
+{% endblock %}
