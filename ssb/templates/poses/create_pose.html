@@ -4,11 +4,13 @@
 
 {% block content %}
   {{ block.super }}
-  <h3>Add a Pose</h3>
+  <div class="container">
+    <h3>Add a Pose</h3>
 
-  <form id="pose-form" class="form-horizontal" method="POST">
-      {% crispy form %}
-  </form>
+    <form id="pose-form" class="form-horizontal" method="POST">
+        {% crispy form %}
+    </form>
+  </div>
 
 {% endblock %}
 

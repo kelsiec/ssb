@@ -3,43 +3,37 @@
 {% load render_bundle from webpack_loader %}
 
 {% block content %}
-  <head>
-    <link rel="icon" href="../../favicon.ico">
-
-    <title>Navbar Template for Bootstrap</title>
-  </head>
-  <body>
-    <div class="container">
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Project name</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li id='home-nav' class="active"><a href="{% url 'home' %}">Home</a></li>
-              <li id='pose-nav' class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Poses<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="{% url 'view_poses' %}">View Pose Library</a></li>
-                  <li><a href="{% url 'create_pose' %}">Submit A Pose</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
         </div>
-      </nav>
-    </div>
-  </body>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li id='home-nav' class="active"><a href="{% url 'home' %}">Home</a></li>
+            <li id='pose-nav' class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Poses<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'view_poses' %}">View Pose Library</a></li>
+                <li><a href="{% url 'create_pose' %}">Submit A Pose</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
 {% endblock %}
 
 {% block styles %}
   {% block extra_style %}
     <link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/datatables.net-bs/css/dataTables.bootstrap.css" rel="stylesheet">
   {% endblock %}
 {% endblock %}
 
