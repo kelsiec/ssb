@@ -1,10 +1,30 @@
 {% extends "site_base.html" %}
 
 {% block content %}
+  {{ block.super }}
+  <div>
     <h2>Poses</h2>
-    <ul>
-        {% for pose in object_list %}
-            <li>{{ pose.name }}</li>
-        {% endfor %}
-    </ul>
+    <table id="pose-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for pose in object_list %}
+            <tr>
+              <td>{{ pose.name }}</td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    $('#pose-table').dataTable();
+    $("li.active").removeClass("active");
+    $('#pose-nav').addClass('active');
+  </script>
 {% endblock %}

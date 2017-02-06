@@ -1,10 +1,20 @@
+{% extends "site_base.html" %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
+  {{ block.super }}
   <h3>Add a Pose</h3>
 
   <form id="pose-form" class="form-horizontal" method="POST">
       {% crispy form %}
   </form>
 
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    $("li.active").removeClass("active");
+    $('#pose-nav').addClass('active');
+  </script>
 {% endblock %}

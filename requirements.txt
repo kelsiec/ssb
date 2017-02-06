@@ -5,3 +5,4 @@ django-crispy-forms
 
 # Dev
 django_debug_toolbar
+django-webpack-loader
