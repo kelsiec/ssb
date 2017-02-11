@@ -6,20 +6,37 @@
     <table id="pose-table" class="table table-striped table-bordered" cellspacing="0">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>English Name</th>
+          <th>Sanskrit Name</th>
+          <th>Breath</th>
           <th>Type of Position</th>
           <th>Spinal Direction</th>
           <th>Challenge Level</th>
+          <th>Benefits</th>
+          <th>Required Prep</th>
+          <th>Required Comp</th>
           <th>Delete?</th>
         </tr>
       </thead>
       <tbody>
           {% for pose in object_list %}
             <tr id={{pose.id}}>
-              <td>{{ pose.name }}</td>
+              <td nowrap>{{ pose.english_name }}</td>
+              <td>{{ pose.sanskrit_name }}</td>
+              <td>{{ pose.breath }}</td>
               <td>{{ pose.get_position_classification_display }}</td>
               <td>{{ pose.get_spinal_classification_display }}</td>
               <td>{{ pose.get_challenge_level_display }}</td>
+              <td nowrap>
+                {% for benefit in pose.benefits.all %}
+                  {{ benefit }}
+                  {% if not forloop.last %}
+                    <br>
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td></td>
+              <td></td>
               <td>
                 <center><a href="#" onclick="javascript:removePoses({{pose.id}})" data-toggle="tooltip" title="Delete">
                   <span><i class="glyphicon glyphicon-remove"></i></span>

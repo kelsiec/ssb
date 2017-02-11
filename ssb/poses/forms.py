@@ -12,22 +12,26 @@ class PoseForm(forms.ModelForm):
         model = Pose
         exclude = ('time',)
 
-    breath = forms.ChoiceField(choices=Breath.BREATH_CHOICES)
-    benefits = forms.ModelChoiceField(queryset=Effect.objects.all())
-    preparation = forms.ModelChoiceField(queryset=Effect.objects.all())
-    compensation = forms.ModelChoiceField(queryset=Effect.objects.all())
+    benefits = forms.ModelMultipleChoiceField(queryset=Effect.objects.all())
+    preparation = forms.ModelMultipleChoiceField(queryset=Effect.objects.all(), required=False)
+    compensation = forms.ModelMultipleChoiceField(queryset=Effect.objects.all(), required=False)
 
     SAVE_POSE_BUTTON_ID = 'save_pose'
 
     helper = FormHelper()
-    helper.form_tag = False
-    helper.label_class = 'col-sm-2'
-    helper.field_class = 'col-sm-4'
     helper.layout = Layout(
-        Field('name'),
-        Field('breath'),
-        Field('spinal_classification'),
-        Field('position_classification'),
+        Div(
+            Div(Field('english_name', css_class="form-control"), css_class="col-lg-4"),
+            Div(Field('sanskrit_name', css_class="form-control"), css_class="col-lg-4"),
+            css_class='row form-group'
+        ),
+        Div(
+            Div(Field('breath', css_class="form-control"), css_class="col-lg-3"),
+            Div(Field('spinal_classification', css_class="form-control"), css_class="col-lg-3"),
+            Div(Field('position_classification', css_class="form-control"), css_class="col-lg-3"),
+            Div(Field('challenge_level', css_class="form-control"), css_class="col-lg-3"),
+            css_class='row form-group'
+        ),
         Div(
             Div(Field('benefits'), css_class="col-lg-3"),
             Div(Field('preparation'), css_class="col-lg-3"),
@@ -37,12 +41,13 @@ class PoseForm(forms.ModelForm):
                      '<span><i class="glyphcion glyphicon-plus"></i>Add Effect</span></a>'),
                 css_class="col-lg-2"
             ),
-            css_class='row'
+            css_class='row form-group'
         ),
-
-        Field('challenge_level'),
-        FormActions(
-            Submit(SAVE_POSE_BUTTON_ID, 'Save', css_class="btn-primary"), css_class='col-sm-6',
+        Div(
+            FormActions(
+                Submit(SAVE_POSE_BUTTON_ID, 'Save', css_class="btn-primary"), css_class='col-sm-6',
+            ),
+            css_class='row form-group'
         )
     )
 
@@ -57,6 +62,7 @@ class EffectForm(forms.ModelForm):
     body_part = forms.CharField(max_length=64, required=True, widget=forms.Select(choices=[]))
 
     helper = FormHelper()
+    helper.form_id = 'add-effect-form'
     helper.layout = Layout(
         Div(
             Div(Field('activation_type'), css_class='col-lg-3'),

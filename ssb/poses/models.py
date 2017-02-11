@@ -10,6 +10,9 @@ class Breath(models.Model):
 
     direction = models.IntegerField(choices=BREATH_CHOICES)
 
+    def __unicode__(self):
+        return self.BREATH_CHOICES[int(self.direction)][1]
+
 
 class BodyPart(models.Model):
     name = models.CharField(max_length=128)
@@ -28,6 +31,9 @@ class Effect(models.Model):
 
     body_part = models.ForeignKey(BodyPart)
     activation_type = models.IntegerField(choices=ACTIVATION_CHOICES)
+
+    class Meta:
+        unique_together = ('body_part', 'activation_type')
 
     def __unicode__(self):
         return "{} the {}".format(self.ACTIVATION_CHOICES[int(self.activation_type)][1], self.body_part)
@@ -60,11 +66,13 @@ class Pose(models.Model):
     )
 
     time = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=128)
+    english_name = models.CharField(max_length=128, unique=True)
+    sanskrit_name = models.CharField(max_length=128, unique=True, blank=True, null=True)
     spinal_classification = models.IntegerField(choices=SPINAL_CLASSIFICATION_CHOICES)
     position_classification = models.IntegerField(choices=POSITION_CLASSIFICATION_CHOICES)
     challenge_level = models.IntegerField(choices=CHALLENGE_LEVEL_CHOICES)
-    breath = models.ManyToManyField(Breath, default=Breath.BREATH_CHOICES[Breath.EXHALE][0])
+    breath = models.ForeignKey(Breath, default=Breath.BREATH_CHOICES[Breath.EXHALE][0])
     benefits = models.ManyToManyField(Effect, related_name='pose_benefits')
-    preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements')
-    compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements')
+    preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements', blank=True)
+    compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements', blank=True)
+

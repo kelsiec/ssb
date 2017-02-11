@@ -1,7 +1,6 @@
 import logging
 import json
 
-from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
