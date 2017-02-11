@@ -3,6 +3,8 @@ global.jQuery = $;
 
 require('bootstrap');
 
+require('select2');
+
 var dt_extras = [
     require("datatables.net"),
     require("datatables.net-bs"),

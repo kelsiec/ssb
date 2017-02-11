@@ -2,6 +2,8 @@
 
 {% load render_bundle from webpack_loader %}
 
+<title>Safe Sequence Builder</title>
+
 {% block topbar_base %}
   <div class="container">
     <nav class="navbar navbar-default">
@@ -11,7 +13,7 @@
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">Safe Sequence Builder</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -20,7 +22,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Poses<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{% url 'view_poses' %}">View Pose Library</a></li>
-                <li><a href="{% url 'create_pose' %}">Submit A Pose</a></li>
+                <li><a href="{% url 'create_pose' %}">Submit a Pose</a></li>
               </ul>
             </li>
           </ul>
@@ -36,6 +38,7 @@
   {% block extra_style %}
     <link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/datatables.net-bs/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/static/select2/dist/css/select2.min.css" rel="stylesheet" />
   {% endblock %}
 {% endblock %}
 
