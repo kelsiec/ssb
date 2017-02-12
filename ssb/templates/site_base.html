@@ -32,6 +32,23 @@
   </div>
 {% endblock %}
 
+{% block body_base %}
+  {% if messages %}
+    <div class="container-fluid">
+      <div id="messages-div" class="col-md-12">
+        <ul id="messages">
+          {% for message in messages %}
+            <div id="message_{{ forloop.counter }}" class="alert alert-{{ message.tags }}">
+              <a href="#" class="msg_clear" onclick="$('#message_{{ forloop.counter }}').fadeOut(); return false;">
+                <small>clear</small></a> {{ message|safe }}
+            </div>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block content %}{% endblock %}
 
 {% block styles %}

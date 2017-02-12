@@ -15,7 +15,7 @@
           <th>Benefits</th>
           <th>Required Prep</th>
           <th>Required Comp</th>
-          <th>Delete?</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -38,9 +38,14 @@
               <td></td>
               <td></td>
               <td>
-                <center><a href="#" onclick="javascript:removePoses({{pose.id}})" data-toggle="tooltip" title="Delete">
-                  <span><i class="glyphicon glyphicon-remove"></i></span>
-                </a></center>
+                <center>
+                  <a href="#" onclick="javascript:removePoses({{pose.id}})" data-toggle="tooltip" title="Delete">
+                    <span><i class="glyphicon glyphicon-remove"></i></span>
+                  </a>
+                  <a href="{% url 'edit_pose' pose.id %}" target="blank" data-toggle="tooltip" title="Edit">
+                    <span><i class="glyphicon glyphicon-pencil"></i></span>
+                  </a>
+                </center>
               </td>
             </tr>
           {% endfor %}

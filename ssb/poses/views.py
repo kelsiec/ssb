@@ -1,9 +1,10 @@
 import logging
 import json
 
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import generic
 
 from .forms import EffectForm, PoseForm
@@ -29,7 +30,29 @@ def create_pose(request):
 
     effect_form = EffectForm(None)
 
-    return render(request, 'poses/create_pose.html', {'effect_form': effect_form, 'pose_form': pose_form})
+    return render(request, 'poses/create_or_modify_pose.html', {'effect_form': effect_form, 'pose_form': pose_form})
+
+
+def edit_pose(request, pose_id):
+    try:
+        pose = Pose.objects.get(id=pose_id)
+    except Pose.DoesNotExist:
+        messages.add_message(request, messages.ERROR, "Pose id {} does not exist.".format(pose_id))
+        return redirect('view_poses')
+
+    pose_form = PoseForm(request.POST or None, instance=pose)
+
+    if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
+        if pose_form.is_valid():
+            pose_form.save()
+        else:
+            logger.error(pose_form.errors)
+
+    effect_form = EffectForm(None)
+
+    messages.add_message(request, messages.SUCCESS, "Pose updated!")
+
+    return render(request, 'poses/create_or_modify_pose.html', {'effect_form': effect_form, 'pose_form': pose_form})
 
 
 def delete_pose(request):

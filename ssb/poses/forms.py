@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, HTML, Layout, Submit
 from crispy_forms.bootstrap import FormActions
 
-from .models import BodyPart, Breath, Effect, Pose
+from .models import BodyPart, Effect, Pose
 
 
 class PoseForm(forms.ModelForm):
