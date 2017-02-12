@@ -152,6 +152,22 @@ def edit_flow(request, flow_id):
     return render(request, 'poses/create_or_modify_flow.html', ctx)
 
 
+def delete_flow(request):
+    if request.POST:
+        flow_ids = request.POST.getlist('flow_ids[]')
+        deleted_ids = []
+        if len(flow_ids) > 0:
+            for flow_id in flow_ids:
+                try:
+                    OrderedPose.objects.filter(flow__id=flow_id).delete()
+                    Flow.objects.get(id=flow_id).delete()
+                    deleted_ids.append(flow_id)
+                except ObjectDoesNotExist:
+                    pass
+        return HttpResponse(json.dumps(flow_ids), content_type="application/json")
+    return HttpResponse('')
+
+
 def add_effect(request):
     form = EffectForm(request.POST or None)
     if request.POST:

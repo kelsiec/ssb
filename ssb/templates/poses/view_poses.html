@@ -65,7 +65,16 @@
               <td nowrap>{{ flow.benefits_to_string|safe }}</td>
               <td nowrap>{{ flow.preparation_to_string|safe }}</td>
               <td nowrap>{{ flow.compensation_to_string|safe }}</td>
-              <td></td>
+              <td>
+                <center>
+                <a href="#" onclick="javascript:removeFlows({{flow.id}})" data-toggle="tooltip" title="Delete">
+                  <span><i class="glyphicon glyphicon-remove"></i></span>
+                </a>
+                <a href="{% url 'edit_flow' flow.id %}" target="blank" data-toggle="tooltip" title="Edit">
+                  <span><i class="glyphicon glyphicon-pencil"></i></span>
+                </a>
+              </center>
+              </td>
             </tr>
           {% endfor %}
       </tbody>
@@ -76,19 +85,20 @@
 {% block extra_js %}
   <script>
     $(document).ready(function(){
-      initPoseDatatable();
+      initDatatable('#pose-table');
+      initDatatable('#flow-table');
       $("li.active").removeClass("active");
       $('#pose-nav').addClass('active');
     });
 
-    function destroyPoseDatatable() {
-        if ($.fn.DataTable.isDataTable('#pose-table')) {
+    function destroyDatatable(field) {
+        if ($.fn.DataTable.isDataTable(field)) {
           $('#pose-table').dataTable().fnDestroy();
         }
     }
 
-    function initPoseDatatable() {
-        $('#pose-table').dataTable({});
+    function initDatatable(field) {
+        $(field).dataTable({});
     }
 
     function removePoses(pose_id){
@@ -97,12 +107,28 @@
         method: "POST",
         data: {'pose_ids': [pose_id] },
         dataType: "json",
-        success: function(access_ids) {
-          destroyPoseDatatable();
+        success: function() {
+          destroyDatatable('#pose-table');
           $("tr").filter(function() {
               return this.id == pose_id;
           })[0].style.display = 'none';
-          initPoseDatatable();
+          initDatatable('#pose-table');
+        },
+      });
+    }
+
+    function removeFlows(flow_id){
+      $.ajax('{% url "delete_flow" %}', {
+        type: "POST",
+        method: "POST",
+        data: {'flow_ids': [flow_id] },
+        dataType: "json",
+        success: function() {
+          destroyDatatable('#flow-table');
+          $("tr").filter(function() {
+              return this.id == flow_id;
+          })[0].style.display = 'none';
+          initDatatable('#flow-table');
         },
       });
     }
