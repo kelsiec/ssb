@@ -5,12 +5,12 @@
 {% block content %}
   <div class="container">
     <h3>Add a Flow</h3>
-    <form class="form-horizontal" method="post" action="{% url 'create_flow' %}">
+    <form class="form-horizontal" method="post" action={{ form_action }}>
       {% csrf_token %}
       <div class="container-fluid">
         <div class="row form-group">
           <label for="id_name">Name:</label>
-          <input id="id_name" class="form-control col-lg-3" maxlength="128" name="name" type="text" required="">
+          {{ flow_name_form.name }}
         </div>
         {{ formset.management_form }}
         <div id="poses">

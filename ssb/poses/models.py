@@ -106,7 +106,7 @@ class Flow(models.Model):
 
     def poses_to_string(self):
         poses = set()
-        for ordered_pose in OrderedPose.objects.filter(flow=self).order_by('-pose_order'):
+        for ordered_pose in OrderedPose.objects.filter(flow=self):
             poses.add("{} ({})".format(ordered_pose.pose.english_name, str(ordered_pose.pose.breath)))
         return self.list_to_table_cell(poses)
 
@@ -135,7 +135,7 @@ class Flow(models.Model):
 
 class OrderedPose(models.Model):
     class Meta:
-        ordering = ['pose_order']
+        ordering = ['-pose_order']
 
     pose_order = models.PositiveIntegerField(db_index=True)
     flow = models.ForeignKey(Flow)

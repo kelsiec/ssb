@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import modelformset_factory
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
 
 from .forms import EffectForm, FlowForm, PoseForm
 from .models import BodyPart, Effect, Flow, Pose, OrderedPose
@@ -97,20 +97,59 @@ def create_flow(request):
     ctx = {
         'flow_name_form': flow_name_form,
         'formset': formset,
+        'form_action': reverse('create_flow')
     }
 
-    return render(request, 'poses/create_flow.html', ctx)
+    return render(request, 'poses/create_or_modify_flow.html', ctx)
 
-#
-# def edit_flow(request):
-#     FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
-#     formset = FlowFormset()
-#
-#     ctx = {
-#         'formset': formset,
-#     }
-#
-#     return render(request, 'poses/create_flow.html', ctx)
+
+def edit_flow(request, flow_id):
+    try:
+        flow = Flow.objects.get(id=flow_id)
+    except Pose.DoesNotExist:
+        messages.add_message(request, messages.ERROR, "Pose id {} does not exist.".format(flow_id))
+        return redirect('view_poses')
+
+    flow_name_form = FlowForm(request.POST or None, instance=flow)
+    FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
+    formset = FlowFormset(request.POST or None, queryset=OrderedPose.objects.filter(flow=flow))
+
+    if request.POST and FlowForm.SAVE_FLOW_BUTTON_ID in request.POST.keys():
+        if flow_name_form.is_valid() and formset.is_valid():
+            flow.name = flow_name_form.cleaned_data['name']
+            flow.save()
+
+            OrderedPose.objects.filter(flow=flow).delete()
+
+            i = 0
+            for form in formset:
+                logger.warning(form.cleaned_data)
+                if form.is_valid() and 'pose' in form.cleaned_data and not form.cleaned_data['DELETE']:
+                    OrderedPose.objects.get_or_create(
+                        pose_order=i, flow=flow, pose=form.cleaned_data['pose'])
+                else:
+                    messages.add_message(request, messages.ERROR, form.errors)
+                    logger.error(form.errors)
+                i += 1
+
+        else:
+            messages.add_message(request, messages.ERROR, flow_name_form.errors)
+            messages.add_message(request, messages.ERROR, formset.errors)
+            logger.error(flow_name_form.errors)
+            logger.error(formset.errors)
+
+        messages.add_message(request, messages.SUCCESS, "Flow updated!")
+        flow_name_form = FlowForm(request.POST or None, instance=flow)
+        FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
+        formset = FlowFormset(request.POST or None, queryset=OrderedPose.objects.filter(flow=flow))
+
+    ctx = {
+        'flow_name_form': flow_name_form,
+        'formset': formset,
+        'form_action': reverse('edit_flow', args=[flow.id])
+    }
+
+    return render(request, 'poses/create_or_modify_flow.html', ctx)
 
 
 def add_effect(request):
