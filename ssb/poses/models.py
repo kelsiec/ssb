@@ -106,8 +106,8 @@ class Flow(models.Model):
 
     def poses_to_string(self):
         poses = set()
-        for pose in self.poses.all():
-            poses.add("{} ({})".format(pose.english_name, str(pose.breath)))
+        for ordered_pose in OrderedPose.objects.filter(flow=self).order_by('-pose_order'):
+            poses.add("{} ({})".format(ordered_pose.pose.english_name, str(ordered_pose.pose.breath)))
         return self.list_to_table_cell(poses)
 
     def benefits_to_string(self):
@@ -130,7 +130,7 @@ class Flow(models.Model):
 
     @staticmethod
     def list_to_table_cell(objects):
-        return "<br>".join(str(object) for object in objects)
+        return "<br>".join(str(obj) for obj in objects)
 
 
 class OrderedPose(models.Model):
