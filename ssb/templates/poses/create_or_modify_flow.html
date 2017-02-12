@@ -33,27 +33,32 @@
 
 {% block extra_js %}
   <script>
-    $('#add-pose').click(function(ev){
-      var poses = $('#poses').children();
-      var count = poses.length;
-      var first = poses[0];
+    $(document).ready(function(){
+      $("li.active").removeClass("active");
+      $('#pose-nav').addClass('active');
 
-      <!--Get the templated dropdown and clear out the selected optoin-->
-      $('#poses').append($.parseHTML($('#pose-template').html()));
-      $('#new-pose-form #id_form-0-data_input').val('')
+      $('#add-pose').click(function(ev){
+        var poses = $('#poses').children();
+        var count = poses.length;
+        var first = poses[0];
 
-      <!--Since the template is for the first form in the formset, e.g. "form-0", -->
-      <!--update all ids and names to use the current count, e.g. "form-5"-->
-      $('#new-pose-form [id*=form-0]').each(function(){
-        $(this)[0].id = $(this)[0].id.replace('form-0', 'form-'+count);
-      })
-      $('#new-pose-form [name*=form-0]').each(function(){
-        $(this)[0].name = $(this)[0].name.replace('form-0', 'form-'+count);
-      })
-      $('#new-pose-form').attr('id', 'pose-' + count);
+        <!--Get the templated dropdown and clear out the selected optoin-->
+        $('#poses').append($.parseHTML($('#pose-template').html()));
+        $('#new-pose-form #id_form-0-data_input').val('')
 
-      <!--Update the total forms count-->
-      $('#id_form-TOTAL_FORMS').attr('value', count+1);
+        <!--Since the template is for the first form in the formset, e.g. "form-0", -->
+        <!--update all ids and names to use the current count, e.g. "form-5"-->
+        $('#new-pose-form [id*=form-0]').each(function(){
+          $(this)[0].id = $(this)[0].id.replace('form-0', 'form-'+count);
+        })
+        $('#new-pose-form [name*=form-0]').each(function(){
+          $(this)[0].name = $(this)[0].name.replace('form-0', 'form-'+count);
+        })
+        $('#new-pose-form').attr('id', 'pose-' + count);
+
+        <!--Update the total forms count-->
+        $('#id_form-TOTAL_FORMS').attr('value', count+1);
+      });
     });
   </script>
 
