@@ -1,0 +1,67 @@
+{% extends "site_base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container">
+    <h3>Add a Flow</h3>
+    <form class="form-horizontal" method="post" action="{% url 'create_flow' %}">
+      {% csrf_token %}
+      <div class="container-fluid">
+        <div class="row form-group">
+          <label for="id_name">Name:</label>
+          <input id="id_name" class="form-control col-lg-3" maxlength="128" name="name" type="text" required="">
+        </div>
+        {{ formset.management_form }}
+        <div id="poses">
+          {% for form in formset %}
+            <div id="pose-{{ forloop.counter0 }}">
+              {{ form }}
+              <br><br>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-actions">
+       <button type="button" id="add-pose" class="btn btn-info">Add Pose</button>
+       <button type="submit" name="save-flow" class="btn btn-primary">Save Flow</button>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    $('#add-pose').click(function(ev){
+      var poses = $('#poses').children();
+      var count = poses.length;
+      var first = poses[0];
+
+      <!--Get the templated dropdown and clear out the selected optoin-->
+      $('#poses').append($.parseHTML($('#pose-template').html()));
+      $('#new-pose-form #id_form-0-data_input').val('')
+
+      <!--Since the template is for the first form in the formset, e.g. "form-0", -->
+      <!--update all ids and names to use the current count, e.g. "form-5"-->
+      $('#new-pose-form [id*=form-0]').each(function(){
+        $(this)[0].id = $(this)[0].id.replace('form-0', 'form-'+count);
+      })
+      $('#new-pose-form [name*=form-0]').each(function(){
+        $(this)[0].name = $(this)[0].name.replace('form-0', 'form-'+count);
+      })
+      $('#new-pose-form').attr('id', 'pose-' + count);
+
+      <!--Update the total forms count-->
+      $('#id_form-TOTAL_FORMS').attr('value', count+1);
+    });
+  </script>
+
+  <!--Render the formset template in a script so that it doesn't actually try to render until we ask for it-->
+  <script type="text/html" id="pose-template">
+    <div id="new-pose-form">
+      {{ formset.0 }}
+      <br><br>
+    </div>
+  </script>
+{% endblock %}

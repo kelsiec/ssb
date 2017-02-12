@@ -3,19 +3,23 @@ import json
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import modelformset_factory
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from django.views import generic
 
-from .forms import EffectForm, PoseForm
-from .models import BodyPart, Effect, Pose
+from .forms import EffectForm, FlowForm, PoseForm
+from .models import BodyPart, Effect, Flow, Pose, OrderedPose
 
 logger = logging.getLogger(__name__)
 
 
-class ViewPoses(generic.ListView):
-    model = Pose
-    template_name = 'poses/view_poses.html'
+def view_poses(request):
+    ctx = {
+        'poses': Pose.objects.all(),
+        'flows': Flow.objects.all()
+    }
+
+    return render(request, 'poses/view_poses.html', ctx)
 
 
 def create_pose(request):
@@ -70,10 +74,47 @@ def delete_pose(request):
     return HttpResponse('')
 
 
+def create_flow(request):
+    flow_name_form = FlowForm(request.POST or None)
+    FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
+    formset = FlowFormset(request.POST or None)
+
+    if request.POST and FlowForm.SAVE_FLOW_BUTTON_ID in request.POST.keys():
+        if flow_name_form.is_valid() and formset.is_valid():
+            flow_instance = flow_name_form.save()
+            i = 0
+            for form in formset:
+                if form.is_valid():
+                    OrderedPose.objects.get_or_create(
+                        pose_order=i, flow=flow_instance, pose=form.cleaned_data['pose'])
+                else:
+                    logger.error(form.errors)
+                i += 1
+        else:
+            logger.error(flow_name_form.errors)
+            logger.error(formset.errors)
+
+    ctx = {
+        'flow_name_form': flow_name_form,
+        'formset': formset,
+    }
+
+    return render(request, 'poses/create_flow.html', ctx)
+
+#
+# def edit_flow(request):
+#     FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
+#     formset = FlowFormset()
+#
+#     ctx = {
+#         'formset': formset,
+#     }
+#
+#     return render(request, 'poses/create_flow.html', ctx)
+
+
 def add_effect(request):
-    logger.warning("GOT TO ADD EFFECT")
     form = EffectForm(request.POST or None)
-    logger.warning(request.POST)
     if request.POST:
         if form.is_valid():
             form.save()

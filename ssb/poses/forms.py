@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, HTML, Layout, Submit
 from crispy_forms.bootstrap import FormActions
 
-from .models import BodyPart, Effect, Pose
+from .models import BodyPart, Effect, Flow, Pose
 
 
 class PoseForm(forms.ModelForm):
@@ -83,3 +83,11 @@ class EffectForm(forms.ModelForm):
             cleaned_data['body_part'] = BodyPart.objects.get_or_create(name=cleaned_data['body_part'])[0]
 
         return cleaned_data
+
+
+class FlowForm(forms.ModelForm):
+    class Meta:
+        model = Flow
+        fields = ('name',)
+
+    SAVE_FLOW_BUTTON_ID = 'save-flow'
