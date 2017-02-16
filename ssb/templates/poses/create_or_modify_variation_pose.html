@@ -1,0 +1,53 @@
+{% extends "poses/create_or_modify_pose.html" %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+    $(document).ready(function(){
+      initializeArmVariationSelects();
+      initializeLegVariationSelects();
+    });
+
+    function initializeArmVariationSelects() {
+      $('#id_arm_variation').select2({
+        ajax: {
+          url: '{% url "get_arm_variations" %}',
+          contentType: "application/json",
+          dataType: 'json',
+          type: 'GET',
+          delay: 250,
+          data: function (term) {
+            return {
+                q: term.term,
+            };
+          },
+          processResults: function (data, page) {
+              return { results: data.results };
+          },
+        },
+        width: '100%',
+      });
+    }
+
+    function initializeLegVariationSelects() {
+      $('#id_leg_variation').select2({
+        ajax: {
+          url: '{% url "get_leg_variations" %}',
+          contentType: "application/json",
+          dataType: 'json',
+          type: 'GET',
+          delay: 250,
+          data: function (term) {
+            return {
+                q: term.term,
+            };
+          },
+          processResults: function (data, page) {
+            return { results: data.results };
+          },
+        },
+        width: '100%',
+      });
+    }
+  </script>
+{% endblock %}

@@ -96,6 +96,66 @@ class Pose(models.Model):
     def effect_to_string(effects):
         return "<br>".join(str(effect) for effect in effects)
 
+    def get_english_name_display(self):
+        return self.english_name
+
+
+class ArmVariation(models.Model):
+    name = models.CharField(max_length=128, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class LegVariation(models.Model):
+    name = models.CharField(max_length=128, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class PoseVariation(models.Model):
+    time = models.DateTimeField(auto_now=True)
+
+    parent_pose = models.ForeignKey(Pose)
+    description = models.CharField(max_length=256, blank=True, null=True)
+
+    challenge_level = models.IntegerField(choices=Pose.CHALLENGE_LEVEL_CHOICES)
+    benefits = models.ManyToManyField(Effect, related_name='variation_benefits', blank=True)
+    preparation = models.ManyToManyField(Effect, related_name='variation_prepartion_requirements', blank=True)
+    compensation = models.ManyToManyField(Effect, related_name='variation_compensation_requirements', blank=True)
+
+    arm_variation = models.ForeignKey(ArmVariation, blank=True, null=True)
+    leg_variation = models.ForeignKey(LegVariation, blank=True, null=True)
+
+    def __unicode__(self):
+        if self.sanskrit_name:
+            return "{} - {}".format(self.parent_pose, self.description)
+        else:
+            return self.english_name
+
+    def benefits_to_string(self):
+        return self.effect_to_string(list(self.benefits.all()) + list(self.parent_pose.benefits.all()))
+
+    def preparation_to_string(self):
+        return self.effect_to_string(list(self.preparation.all()) + list(self.parent_pose.preparation.all()))
+
+    def compensation_to_string(self):
+        return self.effect_to_string(list(self.compensation.all()) + list(self.parent_pose.compensation.all()))
+
+    @staticmethod
+    def effect_to_string(effects):
+        return "<br>".join(str(effect) for effect in effects)
+
+    def get_english_name_display(self):
+        name = self.parent_pose.english_name
+        if str(self.arm_variation):
+            name += " ({})".format(self.arm_variation)
+        if str(self.leg_variation):
+            name += " ({})".format(self.leg_variation)
+
+        return name
+
 
 class Flow(models.Model):
     name = models.CharField(max_length=128, unique=True)

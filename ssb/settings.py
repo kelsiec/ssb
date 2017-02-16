@@ -156,6 +156,9 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'node_modules', 'bootstrap', 'dist'),
+    os.path.join(BASE_DIR, 'node_modules', 'select2', 'dist'),
+    os.path.join(BASE_DIR, 'node_modules', 'datatables.net-bs'),
 ]
 
 WEBPACK_LOADER = {

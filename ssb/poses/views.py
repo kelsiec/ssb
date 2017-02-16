@@ -7,15 +7,15 @@ from django.forms import modelformset_factory
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, reverse
 
-from .forms import EffectForm, FlowForm, PoseForm
-from .models import BodyPart, Effect, Flow, Pose, OrderedPose
+from .forms import EffectForm, FlowForm, PoseForm, PoseVariationForm
+from .models import ArmVariation, BodyPart, Effect, Flow, LegVariation, OrderedPose, Pose, PoseVariation
 
 logger = logging.getLogger(__name__)
 
 
 def view_poses(request):
     ctx = {
-        'poses': Pose.objects.all(),
+        'poses': list(Pose.objects.all()) + list(PoseVariation.objects.all()),
         'flows': Flow.objects.all()
     }
 
@@ -72,6 +72,23 @@ def delete_pose(request):
                     pass
         return HttpResponse(json.dumps(pose_ids), content_type="application/json")
     return HttpResponse('')
+
+
+def create_pose_variation(request):
+    pose_form = PoseVariationForm(request.POST or None)
+
+    if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
+        if pose_form.is_valid():
+            pose_form.save()
+            pose_form = PoseForm(None)
+        else:
+            logger.error(pose_form.errors)
+
+    effect_form = EffectForm(None)
+
+    ctx = {'effect_form': effect_form, 'pose_form': pose_form}
+
+    return render(request, 'poses/create_or_modify_variation_pose.html', ctx)
 
 
 def create_flow(request):
@@ -211,6 +228,42 @@ def get_body_parts(request):
     for body_part in body_parts:
         fragments.append({'text': body_part.name, 'id': body_part.id})
     if len(body_parts) == 0:
+        fragments.append({'text': query + " (new value)", 'id': query})
+
+    data = {
+        "results": fragments,
+    }
+    return JsonResponse(data)
+
+
+def get_arm_variations(request):
+    query = request.GET.get("q", None)
+    if query is None:
+        return JsonResponse({'results': []})
+
+    arm_variations = ArmVariation.objects.filter(name__icontains=query).order_by("name")
+    fragments = []
+    for arm_variation in arm_variations:
+        fragments.append({'text': arm_variation.name, 'id': arm_variation.id})
+    if len(arm_variations) == 0:
+        fragments.append({'text': query + " (new value)", 'id': query})
+
+    data = {
+        "results": fragments,
+    }
+    return JsonResponse(data)
+
+
+def get_leg_variations(request):
+    query = request.GET.get("q", None)
+    if query is None:
+        return JsonResponse({'results': []})
+
+    leg_variations = LegVariation.objects.filter(name__icontains=query).order_by("name")
+    fragments = []
+    for leg_variation in leg_variations:
+        fragments.append({'text': leg_variation.name, 'id': leg_variation.id})
+    if len(leg_variations) == 0:
         fragments.append({'text': query + " (new value)", 'id': query})
 
     data = {

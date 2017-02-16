@@ -21,7 +21,7 @@
       <tbody>
         {% for pose in poses %}
           <tr id={{pose.id}}>
-            <td nowrap>{{ pose.english_name }}</td>
+            <td nowrap>{{ pose.get_english_name_display }}</td>
             <td>{{ pose.sanskrit_name }}</td>
             <td>{{ pose.breath }}</td>
             <td>{{ pose.get_position_classification_display }}</td>
