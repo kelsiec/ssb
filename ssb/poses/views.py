@@ -80,7 +80,7 @@ def create_pose_variation(request):
     if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
         if pose_form.is_valid():
             pose_form.save()
-            pose_form = PoseForm(None)
+            pose_form = PoseVariationForm(None)
         else:
             logger.error(pose_form.errors)
 
