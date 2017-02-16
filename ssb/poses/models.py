@@ -99,6 +99,12 @@ class Pose(models.Model):
     def get_english_name_display(self):
         return self.english_name
 
+    def get_sanskrit_name_display(self):
+        return self.sanskrit_name
+
+    def get_breath_display(self):
+        return self.breath
+
 
 class ArmVariation(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
@@ -155,6 +161,21 @@ class PoseVariation(models.Model):
             name += " ({})".format(self.leg_variation)
 
         return name
+
+    def get_sanskrit_name_display(self):
+        return self.parent_pose.sanskrit_name
+
+    def get_breath_display(self):
+        return self.parent_pose.breath
+
+    def get_position_classification_display(self):
+        return self.parent_pose.get_position_classification_display()
+
+    def get_spinal_classification_display(self):
+        return self.parent_pose.get_spinal_classification_display()
+
+    def get_challenge_level_display(self):
+        return self.parent_pose.get_challenge_level_display()
 
 
 class Flow(models.Model):
