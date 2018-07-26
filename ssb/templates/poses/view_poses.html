@@ -3,47 +3,11 @@
 {% block content %}
   <div class="container">
     <h2>Poses</h2>
-    <table id="pose-table" class="table table-striped table-bordered" cellspacing="0">
-      <thead>
-        <tr>
-          <th>English Name</th>
-          <th>Sanskrit Name</th>
-          <th>Breath</th>
-          <th>Type of Position</th>
-          <th>Spinal Direction</th>
-          <th>Challenge Level</th>
-          <th>Benefits</th>
-          <th>Required Prep</th>
-          <th>Required Comp</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for pose in poses %}
-          <tr id={{pose.id}}>
-            <td nowrap>{{ pose.get_english_name_display }}</td>
-            <td>{{ pose.get_sanskrit_name_display }}</td>
-            <td>{{ pose.get_breath_display }}</td>
-            <td>{{ pose.get_position_classification_display }}</td>
-            <td>{{ pose.get_spinal_classification_display }}</td>
-            <td>{{ pose.get_challenge_level_display }}</td>
-            <td nowrap>{{ pose.benefits_to_string|safe }}</td>
-            <td nowrap>{{ pose.preparation_to_string|safe }}</td>
-            <td nowrap>{{ pose.compensation_to_string|safe }}</td>
-            <td>
-              <center>
-                <a href="#" onclick="javascript:removePoses({{pose.id}})" data-toggle="tooltip" title="Delete">
-                  <span><i class="glyphicon glyphicon-remove"></i></span>
-                </a>
-                <a href="{% url 'edit_pose' pose.id %}" target="blank" data-toggle="tooltip" title="Edit">
-                  <span><i class="glyphicon glyphicon-pencil"></i></span>
-                </a>
-              </center>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <section class="section">
+      <div class="container">
+          <div id="pose-table-container" class="columns"><!-- React --></div>
+      </div>
+    </section>
     <br><br>
     <h2>Flows</h2>
     <table id="flow-table" class="table table-striped table-bordered" cellspacing="0">
@@ -84,23 +48,6 @@
 
 {% block extra_js %}
   <script>
-    $(document).ready(function(){
-      initDatatable('#pose-table');
-      initDatatable('#flow-table');
-      $("li.active").removeClass("active");
-      $('#pose-nav').addClass('active');
-    });
-
-    function destroyDatatable(field) {
-        if ($.fn.DataTable.isDataTable(field)) {
-          $('#pose-table').dataTable().fnDestroy();
-        }
-    }
-
-    function initDatatable(field) {
-        $(field).dataTable({});
-    }
-
     function removePoses(pose_id){
       $.ajax('{% url "delete_pose" %}', {
         type: "POST",
@@ -108,11 +55,9 @@
         data: {'pose_ids': [pose_id] },
         dataType: "json",
         success: function() {
-          destroyDatatable('#pose-table');
           $("tr").filter(function() {
               return this.id == pose_id;
           })[0].style.display = 'none';
-          initDatatable('#pose-table');
         },
       });
     }
@@ -124,11 +69,9 @@
         data: {'flow_ids': [flow_id] },
         dataType: "json",
         success: function() {
-          destroyDatatable('#flow-table');
           $("tr").filter(function() {
               return this.id == flow_id;
           })[0].style.display = 'none';
-          initDatatable('#flow-table');
         },
       });
     }

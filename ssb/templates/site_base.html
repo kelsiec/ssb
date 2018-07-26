@@ -5,32 +5,11 @@
 <title>Safe Sequence Builder</title>
 
 {% block topbar_base %}
-  <div class="container">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Safe Sequence Builder</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li id='home-nav' class="active"><a href="{% url 'home' %}">Home</a></li>
-            <li id='pose-nav' class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Poses<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'view_poses' %}">View Pose Library</a></li>
-                <li><a href="{% url 'create_pose' %}">Submit a Pose</a></li>
-                <li><a href="{% url 'create_flow' %}">Submit a Pose Flow</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </div>
+  <section class="section">
+    <div class="container">
+          <div id="topnav" class="columns"><!-- React --></div>
+    </div>
+  </section>
 {% endblock %}
 
 {% block body_base %}
@@ -50,12 +29,11 @@
   {% endif %}
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
 
 {% block styles %}
   {% block extra_style %}
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/dataTables.bootstrap.css" rel="stylesheet">
     <link href="/static/css/select2.min.css" rel="stylesheet" />
   {% endblock %}
 {% endblock %}
@@ -79,6 +57,8 @@
         }
     });
   </script>
+  <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
 {% endblock %}
 
 {% block extra_js %}{% endblock %}

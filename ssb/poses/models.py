@@ -83,6 +83,9 @@ class Pose(models.Model):
         else:
             return self.english_name
 
+    def get_spinal_classification_display(self):
+        return 'foo'
+
     def benefits_to_string(self):
         return self.effect_to_string(self.benefits.all())
 

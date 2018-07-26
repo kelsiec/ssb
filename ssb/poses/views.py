@@ -7,10 +7,30 @@ from django.forms import modelformset_factory
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, reverse
 
+from rest_framework import serializers
+from rest_framework.generics import ListCreateAPIView
+
 from .forms import EffectForm, FlowForm, PoseForm, PoseVariationForm
 from .models import ArmVariation, BodyPart, Effect, Flow, LegVariation, OrderedPose, Pose, PoseVariation
 
 logger = logging.getLogger(__name__)
+
+
+class PoseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pose
+        fields = (
+            'english_name',
+            'sanskrit_name',
+            'position_classification',
+            'spinal_classification',
+            'challenge_level',
+        )
+
+
+class PoseListCreate(ListCreateAPIView):
+    queryset = Pose.objects.all()
+    serializer_class = PoseSerializer
 
 
 def view_poses(request):

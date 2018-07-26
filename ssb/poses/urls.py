@@ -3,6 +3,7 @@ from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
+    url(r'^poses/$', PoseListCreate.as_view(), name='get_poses'),
     url(r'^view_poses/$', view_poses, name='view_poses'),
     url(r'^create_pose/$', create_pose, name='create_pose'),
     url(r'^edit_pose/(?P<pose_id>\d+)$', edit_pose, name='edit_pose'),
