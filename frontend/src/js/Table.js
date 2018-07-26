@@ -1,32 +1,36 @@
-import React from "react";
-import PropTypes from "prop-types";
-import key from "weak-key";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
-const Table = ({ data }) =>
-  !data.length ? (
-    <p>Nothing to show</p>
-  ) : (
+const SsbTable = (data) => (
     <div className="column">
-      <h2 className="subtitle">
-        Showing <strong>{data.length} items</strong>
-      </h2>
-      <table className="table is-striped">
-        <thead>
-          <tr>
-            {Object.entries(data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(el => (
-            <tr key={el.id}>
-              {Object.entries(el).map(el => <td key={key(el)}>{el[1]}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <Paper>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        {data.header.map(value => (
+                            <TableCell>{value}</TableCell>
+                        ))}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.data.map(el => (
+                        <TableRow key={el.id}>
+                            {Object.entries(el).map(el => <TableCell>{el[1]}</TableCell>)}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </Paper>
     </div>
-  );
+);
 Table.propTypes = {
   data: PropTypes.array.isRequired
 };
-export default Table;
+export default SsbTable;
