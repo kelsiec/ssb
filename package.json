@@ -4,8 +4,8 @@
   "description": "Safe Sequence Builder",
   "main": "index.js",
   "scripts": {
-    "eslint": "eslint ./frontend/src/js/*",
-    "eslint::fix": "eslint --fix ./frontend/src/js/*",
+    "eslint": "./node_modules/.bin/eslint ./frontend/src/js/*",
+    "eslint::fix": "./node_modules/.bin/eslint --fix ./frontend/src/js/*",
     "build": "webpack ./frontend/src/js/App.js"
   },
   "repository": {
