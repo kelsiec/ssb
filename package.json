@@ -33,7 +33,9 @@
   },
   "dependencies": {
     "@material-ui/core": "^1.4.1",
+    "@material-ui/icons": "^2.0.0",
     "bootstrap": "^3.3.7",
+    "classnames": "^2.2.6",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.10.0",
     "imports-loader": "^0.7.0",
