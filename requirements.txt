@@ -1,6 +1,7 @@
 # Base
 Django==1.10.5
-psycopg2==2.6.2
+flake8==3.5.0
+psycopg2==2.7.5
 django-crispy-forms
 djangorestframework==3.8.2
 

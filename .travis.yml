@@ -1,0 +1,19 @@
+language: python
+python:
+  - "2.7"
+node_js:
+  - "0.33.11"
+addons:
+  postgresql: "9.6"
+
+install:
+  - npm install
+  - pip install -r requirements.txt
+
+cache:
+  directories:
+    - "node_modules"
+
+script:
+  - flake8 ssb
+  - npm run lint
