@@ -163,7 +163,7 @@ class SsbTable extends React.Component {
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }))
+      this.setState(state => ({ selected: state.data.map((n, index) => index) }))
       return
     }
     this.setState({ selected: [] })
@@ -241,16 +241,16 @@ class SsbTable extends React.Component {
               {data
                 .sort(getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(row => {
-                  const isSelected = this.isSelected(row.id)
+                .map((row, index) => {
+                  const isSelected = this.isSelected(index)
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, row.id)}
+                      onClick={event => this.handleClick(event, index)}
                       role='checkbox'
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={index}
                       selected={isSelected}
                     >
                       <TableCell padding='checkbox'>
