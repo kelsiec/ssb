@@ -1,0 +1,13 @@
+[flake8]
+ignore = D203
+exclude =
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    build,
+    dist,
+    lib,
+    ssb/bin
+    */migrations/*.py,
+    ssb/local_settings.py
+max-line-length = 120

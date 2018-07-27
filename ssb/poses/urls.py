@@ -1,6 +1,21 @@
 from django.conf.urls import url
 
-from .views import *
+from .views import (
+    PoseListCreate,
+    add_effect,
+    create_flow,
+    create_pose,
+    create_pose_variation,
+    delete_flow,
+    delete_pose,
+    edit_flow,
+    edit_pose,
+    get_arm_variations,
+    get_body_parts,
+    get_effects,
+    get_leg_variations,
+    view_poses,
+)
 
 urlpatterns = [
     url(r'^poses/$', PoseListCreate.as_view(), name='get_poses'),

@@ -103,12 +103,12 @@ class PoseVariationForm(forms.ModelForm):
 
         try:
             cleaned_data['arm_variation'] = ArmVariation.objects.get(id=int(cleaned_data['arm_variation']))
-        except:
+        except (ArmVariation.DoesNotExist, ValueError):
             cleaned_data['arm_variation'] = ArmVariation.objects.get_or_create(name=cleaned_data['arm_variation'])[0]
 
         try:
             cleaned_data['leg_variation'] = LegVariation.objects.get(id=int(cleaned_data['leg_variation']))
-        except:
+        except (LegVariation.DoesNotExist, ValueError):
             cleaned_data['leg_variation'] = LegVariation.objects.get_or_create(name=cleaned_data['leg_variation'])[0]
 
         return cleaned_data
@@ -141,7 +141,7 @@ class EffectForm(forms.ModelForm):
 
         try:
             cleaned_data['body_part'] = BodyPart.objects.get(id=int(cleaned_data['body_part']))
-        except:
+        except (BodyPart.DoesNotExist, ValueError):
             cleaned_data['body_part'] = BodyPart.objects.get_or_create(name=cleaned_data['body_part'])[0]
 
         return cleaned_data
