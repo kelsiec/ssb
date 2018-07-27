@@ -4,8 +4,8 @@
   "description": "Safe Sequence Builder",
   "main": "index.js",
   "scripts": {
-    "standard": "standard ./frontend/src/js/*",
-    "standard::fix": "standard --fix ./frontend/src/js/*",
+    "eslint": "eslint ./frontend/src/js/*",
+    "eslint::fix": "eslint --fix ./frontend/src/js/*",
     "build": "webpack ./frontend/src/js/App.js"
   },
   "repository": {
@@ -18,16 +18,23 @@
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.26.4",
+    "eslint": "^5.2.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-standard": "^3.1.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "standard": "^11.0.1",
     "style-loader": "^0.13.2",
     "weak-key": "^1.0.0",
     "webpack": "^4.16.2",
@@ -46,5 +53,8 @@
     "less-loader": "^2.2.3",
     "select2": "^4.0.3"
   },
-  "keywords": []
+  "keywords": [],
+  "standard": {
+    "parser": "babel-eslint"
+  }
 }

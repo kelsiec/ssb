@@ -4,4 +4,4 @@ import TopNav from './TopNav'
 import './PoseTable'
 
 const topnav = document.getElementById('topnav')
-topnav ? ReactDOM.render(<TopNav />, topnav) : null
+if (topnav) ReactDOM.render(<TopNav />, topnav)

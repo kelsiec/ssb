@@ -1,42 +1,42 @@
-import React from 'react';
+import React from 'react'
 
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
+import classNames from 'classnames'
+import PropTypes from 'prop-types'
 
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@material-ui/core/IconButton'
+import Paper from '@material-ui/core/Paper'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
+import Toolbar from '@material-ui/core/Toolbar'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
 
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
+import { lighten } from '@material-ui/core/styles/colorManipulator'
+import { withStyles } from '@material-ui/core/styles'
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import DeleteIcon from '@material-ui/icons/Delete'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
 const toolbarStyles = theme => ({
   root: {
     paddingRight: theme.spacing.unit,
   },
   highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+  theme.palette.type === 'light'
+    ? {
+      color: theme.palette.secondary.main,
+      backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+    }
+    : {
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.secondary.dark,
+    },
   spacer: {
     flex: '1 1 100%',
   },
@@ -46,10 +46,10 @@ const toolbarStyles = theme => ({
   title: {
     flex: '0 0 auto',
   },
-});
+})
 
 let SsbTableToolbar = props => {
-  const { numSelected, classes } = props;
+  const { numSelected, classes } = props
 
   return (
     <Toolbar
@@ -59,11 +59,11 @@ let SsbTableToolbar = props => {
     >
       <div className={classes.title}>
         {numSelected > 0 ? (
-          <Typography color="inherit" variant="subheading">
+          <Typography color='inherit' variant='subheading'>
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography variant="title" id="tableTitle">
+          <Typography variant='title' id='tableTitle'>
             Nutrition
           </Typography>
         )}
@@ -71,34 +71,34 @@ let SsbTableToolbar = props => {
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
+          <Tooltip title='Delete'>
+            <IconButton aria-label='Delete'>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
+          <Tooltip title='Filter list'>
+            <IconButton aria-label='Filter list'>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
         )}
       </div>
     </Toolbar>
-  );
-};
+  )
+}
 
 SsbTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
-};
+}
 
-SsbTableToolbar = withStyles(toolbarStyles)(SsbTableToolbar);
+SsbTableToolbar = withStyles(toolbarStyles)(SsbTableToolbar)
 
-function getSorting(order, orderBy) {
+function getSorting (order, orderBy) {
   return order === 'desc'
     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
-    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1)
 }
 
 const styles = theme => ({
@@ -112,11 +112,28 @@ const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
   },
-});
+})
 
 class SsbTable extends React.Component {
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    order: 'asc',
+    selected: [],
+    page: 0,
+    rowsPerPage: 5,
+  }
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    data: PropTypes.array.isRequired,
+    header: PropTypes.array.isRequired,
+    order: PropTypes.string,
+    orderBy: PropTypes.string.isRequired,
+    page: PropTypes.number,
+    rowsPerPage: PropTypes.number,
+    selected: PropTypes.array,
+  }
+
+  constructor (props) {
+    super(props)
 
     this.state = {
       header: props.header,
@@ -126,79 +143,79 @@ class SsbTable extends React.Component {
       selected: props.selected,
       rowsPerPage: props.rowsPerPage,
       page: props.page,
-    };
+    }
   }
 
   createSortHandler = property => event => {
-    this.handleRequestSort(event, property);
-  };
+    this.handleRequestSort(event, property)
+  }
 
   handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
+    const orderBy = property
+    let order = 'desc'
 
     if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+      order = 'asc'
     }
 
-    this.setState({ order, orderBy });
-  };
+    this.setState({ order, orderBy })
+  }
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
-      return;
+      this.setState(state => ({ selected: state.data.map(n => n.id) }))
+      return
     }
-    this.setState({ selected: [] });
-  };
+    this.setState({ selected: [] })
+  }
 
   handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+    const { selected } = this.state
+    const selectedIndex = selected.indexOf(id)
+    let newSelected = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, id)
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
+      newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(selected.slice(0, -1))
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
-      );
+      )
     }
 
-    this.setState({ selected: newSelected });
-  };
+    this.setState({ selected: newSelected })
+  }
 
   handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
+    this.setState({ page })
+  }
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
+    this.setState({ rowsPerPage: event.target.value })
+  }
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  isSelected = id => this.state.selected.indexOf(id) !== -1
 
-  render() {
-    const { classes } = this.props;
-    const { header, data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+  render () {
+    const { classes } = this.props
+    const { header, data, order, orderBy, selected, rowsPerPage, page } = this.state
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
-    const numSelected = selected.length;
-    const rowCount = data.length;
+    const numSelected = selected.length
+    const rowCount = data.length
 
     return (
       <Paper className={classes.root}>
         <SsbTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
+          <Table className={classes.table} aria-labelledby='tableTitle'>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell padding='checkbox'>
                   <Checkbox
                     indeterminate={numSelected > 0 && numSelected < rowCount}
                     checked={numSelected === rowCount}
@@ -206,8 +223,8 @@ class SsbTable extends React.Component {
                   />
                 </TableCell>
                 {header.map((key, index) => {
-                  return <TableCell sortDirection={orderBy === index ? order : false}>
-                    <Tooltip title="Sort" placement={'bottom-start'} enterDelay={300} >
+                  return <TableCell key={index} sortDirection={orderBy === index ? order : false}>
+                    <Tooltip title='Sort' placement={'bottom-start'} enterDelay={300} >
                       <TableSortLabel
                         active={orderBy === index}
                         direction={order}
@@ -216,44 +233,44 @@ class SsbTable extends React.Component {
                         {key}
                       </TableSortLabel>
                     </Tooltip>
-                  </TableCell>;
+                  </TableCell>
                 })}
               </TableRow>
             </TableHead>
             <TableBody>
-                {data
-                    .sort(getSorting(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(row => {
-                        const isSelected = this.isSelected(row.id);
-                        return (
-                            <TableRow
-                                hover
-                                onClick={event => this.handleClick(event, row.id)}
-                                role="checkbox"
-                                aria-checked={isSelected}
-                                tabIndex={-1}
-                                key={row.id}
-                                selected={isSelected}
-                            >
-                                <TableCell padding="checkbox">
-                                    <Checkbox checked={isSelected}/>
-                                </TableCell>
-                                {Object.entries(row).map(cell => <TableCell>{cell[1]}</TableCell>)}
-                            </TableRow>
-                        )
-                    })
-                }
-                {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={header.length + 1} />
+              {data
+                .sort(getSorting(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(row => {
+                  const isSelected = this.isSelected(row.id)
+                  return (
+                    <TableRow
+                      hover
+                      onClick={event => this.handleClick(event, row.id)}
+                      role='checkbox'
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isSelected}
+                    >
+                      <TableCell padding='checkbox'>
+                        <Checkbox checked={isSelected}/>
+                      </TableCell>
+                      {Object.entries(row).map(cell => <TableCell key={cell[1]}>{cell[1]}</TableCell>)}
                     </TableRow>
-                )}
+                  )
+                })
+              }
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 49 * emptyRows }}>
+                  <TableCell colSpan={header.length + 1} />
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
         <TablePagination
-          component="div"
+          component='div'
           count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -271,17 +288,4 @@ class SsbTable extends React.Component {
   }
 }
 
-SsbTable.defaultProps = {
-  order: 'asc',
-  selected: [],
-  page: 0,
-  rowsPerPage: 5,
-};
-
-SsbTable.propTypes = {
-    data: PropTypes.array.isRequired,
-    header: PropTypes.array.isRequired,
-    orderBy: PropTypes.string.isRequired,
-};
-
-export default withStyles(styles)(SsbTable);
+export default withStyles(styles)(SsbTable)

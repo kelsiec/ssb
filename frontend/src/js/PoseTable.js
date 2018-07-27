@@ -8,7 +8,7 @@ const header = [
   'Sanskrit Name',
   'Body Position',
   'Spinal Position',
-  'Challenge Level'
+  'Challenge Level',
 ]
 const PoseTable = () => (
   <DataProvider
@@ -18,4 +18,4 @@ const PoseTable = () => (
 )
 
 const wrapper = document.getElementById('pose-table-container')
-wrapper ? ReactDOM.render(<PoseTable />, wrapper) : null
+if (wrapper) ReactDOM.render(<PoseTable />, wrapper)
