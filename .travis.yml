@@ -5,4 +5,5 @@ install:
   - pip install -r requirements.txt
 script:
   - flake8 ssb
+  - pwd
   - ./node_modules/.bin/eslint ./frontend/src/js/*
