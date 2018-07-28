@@ -27,6 +27,10 @@ class PoseSerializer(serializers.ModelSerializer):
             'challenge_level',
         )
 
+    position_classification = serializers.CharField(source='get_position_classification_display')
+    spinal_classification = serializers.CharField(source='get_spinal_classification_display')
+    challenge_level = serializers.CharField(source='get_challenge_level_display')
+
 
 class PoseListCreate(ListCreateAPIView):
     queryset = Pose.objects.all()
