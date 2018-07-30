@@ -198,7 +198,17 @@ class SsbTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value })
   }
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1
+  isSelected = id => {
+    return this.state.selected.indexOf(id) !== -1
+  }
+
+  static printCell (cell) {
+    if (cell[1].constructor === Array) {
+      return <TableCell key={cell[1]}>{cell[1].map((entry, index) => <li key={index}>{entry}</li>)}</TableCell>
+    } else {
+      return <TableCell key={cell[1]}>{cell[1]}</TableCell>
+    }
+  }
 
   render () {
     const { classes } = this.props
@@ -256,7 +266,7 @@ class SsbTable extends React.Component {
                       <TableCell padding='checkbox'>
                         <Checkbox checked={isSelected}/>
                       </TableCell>
-                      {Object.entries(row).map(cell => <TableCell key={cell[1]}>{cell[1]}</TableCell>)}
+                      {Object.entries(row).map(cell => SsbTable.printCell(cell))}
                     </TableRow>
                   )
                 })

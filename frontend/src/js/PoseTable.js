@@ -6,9 +6,11 @@ import SsbTable from './Table'
 const header = [
   'English Name',
   'Sanskrit Name',
+  'Breath',
   'Body Position',
   'Spinal Position',
   'Challenge Level',
+  'Benefits',
 ]
 const PoseTable = () => (
   <DataProvider
