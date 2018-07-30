@@ -22,14 +22,18 @@ class PoseSerializer(serializers.ModelSerializer):
         fields = (
             'english_name',
             'sanskrit_name',
+            'breath',
             'position_classification',
             'spinal_classification',
             'challenge_level',
+            'benefits',
         )
 
+    breath = serializers.StringRelatedField()
     position_classification = serializers.CharField(source='get_position_classification_display')
     spinal_classification = serializers.CharField(source='get_spinal_classification_display')
     challenge_level = serializers.CharField(source='get_challenge_level_display')
+    benefits = serializers.StringRelatedField(many=True)
 
 
 class PoseListCreate(ListCreateAPIView):
