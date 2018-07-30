@@ -13,7 +13,7 @@ const header = [
 const PoseTable = () => (
   <DataProvider
     endpoint='/poses/poses/'
-    render={data => <SsbTable header={header} data={data} orderBy='english_name' />}
+    render={data => <SsbTable title='Poses' header={header} data={data} orderBy='english_name' />}
   />
 )
 
