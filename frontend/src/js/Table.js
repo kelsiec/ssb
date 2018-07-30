@@ -49,7 +49,7 @@ const toolbarStyles = theme => ({
 })
 
 let SsbTableToolbar = props => {
-  const { numSelected, classes } = props
+  const { title, numSelected, classes } = props
 
   return (
     <Toolbar
@@ -64,7 +64,7 @@ let SsbTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant='title' id='tableTitle'>
-            Nutrition
+            {title}
           </Typography>
         )}
       </div>
@@ -91,6 +91,7 @@ let SsbTableToolbar = props => {
 SsbTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
 }
 
 SsbTableToolbar = withStyles(toolbarStyles)(SsbTableToolbar)
@@ -120,6 +121,7 @@ class SsbTable extends React.Component {
     selected: [],
     page: 0,
     rowsPerPage: 5,
+    title: '',
   }
   static propTypes = {
     classes: PropTypes.object.isRequired,
@@ -130,13 +132,13 @@ class SsbTable extends React.Component {
     page: PropTypes.number,
     rowsPerPage: PropTypes.number,
     selected: PropTypes.array,
+    title: PropTypes.string,
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      header: props.header,
       data: props.data,
       order: props.order,
       orderBy: props.orderBy,
@@ -211,8 +213,10 @@ class SsbTable extends React.Component {
   }
 
   render () {
-    const { classes } = this.props
-    const { header, data, order, orderBy, selected, rowsPerPage, page } = this.state
+    const classes = this.props.classes
+    const title = this.props.title
+    const header = this.props.header
+    const { data, order, orderBy, selected, rowsPerPage, page } = this.state
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
     const numSelected = selected.length
@@ -220,7 +224,7 @@ class SsbTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <SsbTableToolbar numSelected={selected.length} />
+        <SsbTableToolbar title={title} numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby='tableTitle'>
             <TableHead>
