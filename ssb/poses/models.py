@@ -10,14 +10,14 @@ class Breath(models.Model):
 
     direction = models.IntegerField(choices=BREATH_CHOICES)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.BREATH_CHOICES[int(self.direction)][1]
 
 
 class BodyPart(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -35,7 +35,7 @@ class Effect(models.Model):
     class Meta:
         unique_together = ('body_part', 'activation_type')
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} the {}".format(self.ACTIVATION_CHOICES[int(self.activation_type)][1], self.body_part)
 
 
@@ -77,7 +77,7 @@ class Pose(models.Model):
     preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements', blank=True)
     compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.sanskrit_name:
             return "{} ({})".format(self.english_name, self.sanskrit_name)
         else:
@@ -109,14 +109,14 @@ class Pose(models.Model):
 class ArmVariation(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class LegVariation(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -134,7 +134,7 @@ class PoseVariation(models.Model):
     arm_variation = models.ForeignKey(ArmVariation, blank=True, null=True)
     leg_variation = models.ForeignKey(LegVariation, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.sanskrit_name:
             return "{} - {}".format(self.parent_pose, self.description)
         else:
