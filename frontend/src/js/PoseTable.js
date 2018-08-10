@@ -4,18 +4,18 @@ import DataProvider from './DataProvider'
 import SsbTable from './Table'
 
 const header = [
-  'English Name',
-  'Sanskrit Name',
-  'Breath',
-  'Body Position',
-  'Spinal Position',
-  'Challenge Level',
-  'Benefits',
+  ['english_name', 'English Name'],
+  ['sanskrit_name', 'Sanskrit Name'],
+  ['breath', 'Breath'],
+  ['body_position', 'Body Position'],
+  ['spinal_classification', 'Spinal Position'],
+  ['challenge_level', 'Challenge Level'],
+  ['benefits', 'Benefits'],
 ]
 const PoseTable = () => (
   <DataProvider
     endpoint='/poses/poses/'
-    render={data => <SsbTable title='Poses' header={header} data={data} orderBy='english_name' />}
+    render={data => <SsbTable title='Poses' header={header} data={data} orderBy={0} />}
   />
 )
 

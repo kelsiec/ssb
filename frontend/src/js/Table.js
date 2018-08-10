@@ -49,15 +49,15 @@ const toolbarStyles = theme => ({
 })
 
 let SsbTableToolbar = props => {
-  const { title, numSelected, classes } = props
+  const { title, numSelected, onFilterChange } = props
 
   return (
     <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
+      className={classNames(toolbarStyles.root, {
+        [toolbarStyles.highlight]: numSelected > 0,
       })}
     >
-      <div className={classes.title}>
+      <div className={toolbarStyles.title}>
         {numSelected > 0 ? (
           <Typography color='inherit' variant='subheading'>
             {numSelected} selected
@@ -68,8 +68,8 @@ let SsbTableToolbar = props => {
           </Typography>
         )}
       </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
+      <div className={toolbarStyles.spacer} />
+      <div className={toolbarStyles.actions}>
         {numSelected > 0 ? (
           <Tooltip title='Delete'>
             <IconButton aria-label='Delete'>
@@ -83,24 +83,19 @@ let SsbTableToolbar = props => {
             </IconButton>
           </Tooltip>
         )}
+        <input type="text" onChange={e => onFilterChange(e)}/>
       </div>
     </Toolbar>
   )
 }
 
 SsbTableToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
 }
 
 SsbTableToolbar = withStyles(toolbarStyles)(SsbTableToolbar)
-
-function getSorting (order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
-    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1)
-}
 
 const styles = theme => ({
   root: {
@@ -128,7 +123,7 @@ class SsbTable extends React.Component {
     data: PropTypes.array.isRequired,
     header: PropTypes.array.isRequired,
     order: PropTypes.string,
-    orderBy: PropTypes.string.isRequired,
+    orderBy: PropTypes.number.isRequired,
     page: PropTypes.number,
     rowsPerPage: PropTypes.number,
     selected: PropTypes.array,
@@ -140,6 +135,7 @@ class SsbTable extends React.Component {
 
     this.state = {
       data: props.data,
+      filterBy: '',
       order: props.order,
       orderBy: props.orderBy,
       selected: props.selected,
@@ -148,16 +144,33 @@ class SsbTable extends React.Component {
     }
   }
 
+  getSorting = (order, orderByIndex) => {
+    let orderBy = this.props.header[orderByIndex][0]
+    return function (a, b) {
+      let result = 0
+      if (a[orderBy] < b[orderBy]) result = -1
+      if (a[orderBy] > b[orderBy]) result = 1
+
+      if (order === 'desc') result *= -1
+
+      return result
+    }
+  }
+
   createSortHandler = property => event => {
     this.handleRequestSort(event, property)
   }
 
+  handleRequestFilter = event => {
+    this.setState({ filterBy: event.target.value })
+  }
+
   handleRequestSort = (event, property) => {
     const orderBy = property
-    let order = 'desc'
+    let order = 'asc'
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc'
+    if (this.state.orderBy === property && this.state.order === 'asc') {
+      order = 'desc'
     }
 
     this.setState({ order, orderBy })
@@ -204,11 +217,33 @@ class SsbTable extends React.Component {
     return this.state.selected.indexOf(id) !== -1
   }
 
-  static printCell (cell) {
+  static isMatch = (object, toMatch) => {
+    let isMatch = false
+    if (toMatch) {
+      Object.values(object).forEach(value => {
+        if (value.constructor === Array) {
+          Object.values(value).forEach(subValue => {
+            if (subValue.includes(toMatch)) {
+              isMatch = true
+            }
+          })
+        }
+        if (value.includes(toMatch)) {
+          isMatch = true
+        }
+      })
+      return isMatch
+    }
+    return true
+  }
+
+  static printCell (rowIndex, columnIndex, cell) {
     if (cell[1].constructor === Array) {
-      return <TableCell key={cell[1]}>{cell[1].map((entry, index) => <li key={index}>{entry}</li>)}</TableCell>
+      return <TableCell key={rowIndex + '-' + columnIndex}>
+        {cell[1].map((entry, index) => <li key={rowIndex + '-' + index}>{entry}</li>)}
+      </TableCell>
     } else {
-      return <TableCell key={cell[1]}>{cell[1]}</TableCell>
+      return <TableCell key={rowIndex + '-' + columnIndex}>{cell[1]}</TableCell>
     }
   }
 
@@ -224,7 +259,11 @@ class SsbTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <SsbTableToolbar title={title} numSelected={selected.length} />
+        <SsbTableToolbar
+          title={title}
+          numSelected={selected.length}
+          onFilterChange={this.handleRequestFilter}
+        />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby='tableTitle'>
             <TableHead>
@@ -236,15 +275,15 @@ class SsbTable extends React.Component {
                     onChange={this.handleSelectAllClick}
                   />
                 </TableCell>
-                {header.map((key, index) => {
-                  return <TableCell key={index} sortDirection={orderBy === index ? order : false}>
+                {header.map((value, index) => {
+                  return <TableCell key={value[0]} sortDirection={orderBy === index ? order : false}>
                     <Tooltip title='Sort' placement={'bottom-start'} enterDelay={300} >
                       <TableSortLabel
                         active={orderBy === index}
                         direction={order}
                         onClick={this.createSortHandler(index)}
                       >
-                        {key}
+                        {value[1]}
                       </TableSortLabel>
                     </Tooltip>
                   </TableCell>
@@ -253,8 +292,9 @@ class SsbTable extends React.Component {
             </TableHead>
             <TableBody>
               {data
-                .sort(getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .filter(e => { return SsbTable.isMatch(e, this.state.filterBy) })
+                .sort(this.getSorting(order, orderBy))
+                .slice(page * rowsPerPage, Math.min(data.length, (page + 1) * rowsPerPage))
                 .map((row, index) => {
                   const isSelected = this.isSelected(index)
                   return (
@@ -270,7 +310,7 @@ class SsbTable extends React.Component {
                       <TableCell padding='checkbox'>
                         <Checkbox checked={isSelected}/>
                       </TableCell>
-                      {Object.entries(row).map(cell => SsbTable.printCell(cell))}
+                      {Object.entries(row).map((cell, colIndex) => SsbTable.printCell(index, colIndex, cell))}
                     </TableRow>
                   )
                 })

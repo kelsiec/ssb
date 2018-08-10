@@ -12,6 +12,8 @@ module.exports = {
       filename: "[name]-[hash].js",
   },
 
+  mode: 'development',
+
   plugins: [
     new BundleTracker({filename: './webpack-stats.json'}),
   ],
