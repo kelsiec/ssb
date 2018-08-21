@@ -1,0 +1,427 @@
+[
+  {
+    "model": "poses.breath",
+    "pk": 1,
+    "fields": {
+      "direction": 0
+    }
+  },
+  {
+    "model": "poses.breath",
+    "pk": 2,
+    "fields": {
+      "direction": 1
+    }
+  },
+  {
+    "model": "poses.bodypart",
+    "pk": 1,
+    "fields": {
+      "name": "Lower Back"
+    }
+  },
+  {
+    "model": "poses.bodypart",
+    "pk": 2,
+    "fields": {
+      "name": "Upper Back"
+    }
+  },
+  {
+    "model": "poses.bodypart",
+    "pk": 4,
+    "fields": {
+      "name": "Hamstring"
+    }
+  },
+  {
+    "model": "poses.bodypart",
+    "pk": 6,
+    "fields": {
+      "name": "Calves"
+    }
+  },
+  {
+    "model": "poses.bodypart",
+    "pk": 9,
+    "fields": {
+      "name": "Belly"
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 1,
+    "fields": {
+      "body_part": 1,
+      "activation_type": 0
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 2,
+    "fields": {
+      "body_part": 1,
+      "activation_type": 2
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 3,
+    "fields": {
+      "body_part": 1,
+      "activation_type": 1
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 5,
+    "fields": {
+      "body_part": 2,
+      "activation_type": 1
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 8,
+    "fields": {
+      "body_part": 2,
+      "activation_type": 0
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 10,
+    "fields": {
+      "body_part": 4,
+      "activation_type": 0
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 13,
+    "fields": {
+      "body_part": 4,
+      "activation_type": 1
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 15,
+    "fields": {
+      "body_part": 4,
+      "activation_type": 2
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 17,
+    "fields": {
+      "body_part": 6,
+      "activation_type": 0
+    }
+  },
+  {
+    "model": "poses.effect",
+    "pk": 20,
+    "fields": {
+      "body_part": 9,
+      "activation_type": 2
+    }
+  },
+  {
+    "model": "poses.pose",
+    "pk": 1,
+    "fields": {
+      "time": "2017-02-12T19:16:36.298Z",
+      "english_name": "Forward Bend",
+      "sanskrit_name": "Uttanasana",
+      "spinal_classification": 3,
+      "position_classification": 3,
+      "challenge_level": 0,
+      "breath": 2,
+      "benefits": [
+        1,
+        2
+      ],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.pose",
+    "pk": 2,
+    "fields": {
+      "time": "2017-02-12T19:24:57.280Z",
+      "english_name": "Tabletop",
+      "sanskrit_name": "",
+      "spinal_classification": 3,
+      "position_classification": 1,
+      "challenge_level": 0,
+      "breath": 1,
+      "benefits": [
+        20
+      ],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.pose",
+    "pk": 3,
+    "fields": {
+      "time": "2017-02-12T19:24:40.936Z",
+      "english_name": "Child's Pose",
+      "sanskrit_name": "Balasana",
+      "spinal_classification": 3,
+      "position_classification": 2,
+      "challenge_level": 0,
+      "breath": 2,
+      "benefits": [
+        1
+      ],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.pose",
+    "pk": 4,
+    "fields": {
+      "time": "2017-02-16T03:10:35.829Z",
+      "english_name": "Cobra",
+      "sanskrit_name": "Bhujangasana",
+      "spinal_classification": 1,
+      "position_classification": 2,
+      "challenge_level": 0,
+      "breath": 1,
+      "benefits": [
+        3,
+        5
+      ],
+      "preparation": [],
+      "compensation": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 1,
+    "fields": {
+      "name": "Forearms on the floor"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 2,
+    "fields": {
+      "name": ""
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 3,
+    "fields": {
+      "name": "Palms on the floor"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 4,
+    "fields": {
+      "name": "Both arms reach to toes, arms on floor"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 5,
+    "fields": {
+      "name": "Both arms reach to toes, arms lift and shoulder blades squeeze together"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 6,
+    "fields": {
+      "name": "Fingers laced together on back, lifting arms on inhale"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 7,
+    "fields": {
+      "name": "Hitchhiking thumbs (Low)"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 8,
+    "fields": {
+      "name": "Hitchhiking thumbs (Medium)"
+    }
+  },
+  {
+    "model": "poses.armvariation",
+    "pk": 9,
+    "fields": {
+      "name": "Hitchhiking thumbs (High)"
+    }
+  },
+  {
+    "model": "poses.legvariation",
+    "pk": 1,
+    "fields": {
+      "name": ""
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 1,
+    "fields": {
+      "time": "2017-02-16T05:38:35.716Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 1,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 2,
+    "fields": {
+      "time": "2017-02-16T06:00:56.564Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 1,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 3,
+    "fields": {
+      "time": "2017-02-16T06:01:47.762Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 1,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 4,
+    "fields": {
+      "time": "2017-02-16T06:02:33.187Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 3,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 5,
+    "fields": {
+      "time": "2017-02-16T06:02:51.080Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 4,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 6,
+    "fields": {
+      "time": "2017-02-16T06:03:20.119Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 5,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 7,
+    "fields": {
+      "time": "2017-02-16T06:03:39.962Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 6,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 8,
+    "fields": {
+      "time": "2017-02-16T06:04:11.449Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 7,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 9,
+    "fields": {
+      "time": "2017-02-16T06:04:22.415Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 8,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  },
+  {
+    "model": "poses.posevariation",
+    "pk": 10,
+    "fields": {
+      "time": "2017-02-16T06:04:32.397Z",
+      "parent_pose": 4,
+      "description": "",
+      "challenge_level": 0,
+      "arm_variation": 9,
+      "leg_variation": 1,
+      "benefits": [],
+      "preparation": [],
+      "compensation": []
+    }
+  }
+]
