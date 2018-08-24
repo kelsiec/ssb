@@ -8,3 +8,4 @@ djangorestframework==3.8.2
 # Dev
 django_debug_toolbar
 django-webpack-loader
+pydevd==1.3.3

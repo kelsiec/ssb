@@ -170,6 +170,8 @@ WEBPACK_LOADER = {
 
 
 USE_TOOLBAR = False
+REMOTE_DEBUG_EGG_LOCATION = '/Applications/Pycharm.app/Contents/debug-eggs/pycharm-debug.egg'
+REMOTE_DEBUG = False
 
 try:
     from local_settings import *  # noqa

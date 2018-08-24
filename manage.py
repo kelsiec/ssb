@@ -2,6 +2,8 @@
 import os
 import sys
 
+from django.conf import settings
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ssb.settings")
     try:
@@ -20,3 +22,9 @@ if __name__ == "__main__":
             )
         raise
     execute_from_command_line(sys.argv)
+
+    if settings.REMOTE_DEBUG:
+        import pydevd
+        import sys
+        sys.path.append(settings.REMOTE_DEBUG_EGG_LOCATION)
+        pydevd.settrace('localhost', port=8001, stdoutToServer=True, stderrToServer=True)
