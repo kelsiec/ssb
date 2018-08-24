@@ -1,6 +1,7 @@
 import React from 'react'
 
 import classNames from 'classnames'
+import Cookies from 'universal-cookie'
 import PropTypes from 'prop-types'
 
 import Checkbox from '@material-ui/core/Checkbox'
@@ -49,7 +50,7 @@ const toolbarStyles = theme => ({
 })
 
 let SsbTableToolbar = props => {
-  const { title, numSelected, onFilterChange } = props
+  const { title, numSelected, onFilterChange, deleteSelected } = props
 
   return (
     <Toolbar
@@ -71,11 +72,13 @@ let SsbTableToolbar = props => {
       <div className={toolbarStyles.spacer} />
       <div className={toolbarStyles.actions}>
         {numSelected > 0 ? (
-          <Tooltip title='Delete'>
-            <IconButton aria-label='Delete'>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          deleteSelected !== undefined ? (
+            <Tooltip title='Delete'>
+              <IconButton aria-label='Delete' onClick={() => { deleteSelected() }}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : ('')
         ) : (
           <Tooltip title='Filter list'>
             <IconButton aria-label='Filter list'>
@@ -83,13 +86,14 @@ let SsbTableToolbar = props => {
             </IconButton>
           </Tooltip>
         )}
-        <input type="text" onChange={e => onFilterChange(e)}/>
+        <input type='text' onChange={e => onFilterChange(e)}/>
       </div>
     </Toolbar>
   )
 }
 
 SsbTableToolbar.propTypes = {
+  deleteSelected: PropTypes.func,
   numSelected: PropTypes.number.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
@@ -121,6 +125,7 @@ class SsbTable extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.array.isRequired,
+    deleteAPI: PropTypes.string,
     header: PropTypes.array.isRequired,
     order: PropTypes.string,
     orderBy: PropTypes.number.isRequired,
@@ -133,6 +138,7 @@ class SsbTable extends React.Component {
   constructor (props) {
     super(props)
 
+    this.cookies = new Cookies()
     this.state = {
       data: props.data,
       filterBy: '',
@@ -159,6 +165,32 @@ class SsbTable extends React.Component {
 
   createSortHandler = property => event => {
     this.handleRequestSort(event, property)
+  }
+
+  deleteSelected = () => {
+    let formData = new FormData()
+    for (let i = 0; i < this.state.selected.length; i++) {
+      formData.append('pose_ids', this.getFilteredData()[this.state.selected[i]]['id'])
+    }
+
+    fetch(this.props.deleteAPI, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': this.cookies.get('csrftoken'),
+      },
+      body: formData,
+    })
+  }
+
+  getFilteredData = () => {
+    return this.props.data
+      .filter(e => { return SsbTable.isMatch(e, this.state.filterBy) })
+      .sort(this.getSorting(this.state.order, this.state.orderBy))
+      .slice(
+        this.state.page * this.state.rowsPerPage,
+        Math.min(this.props.data.length, (this.state.page + 1) * this.state.rowsPerPage)
+      )
   }
 
   handleRequestFilter = event => {
@@ -238,12 +270,15 @@ class SsbTable extends React.Component {
   }
 
   static printCell (rowIndex, columnIndex, cell) {
-    if (cell[1].constructor === Array) {
-      return <TableCell key={rowIndex + '-' + columnIndex}>
-        {cell[1].map((entry, index) => <li key={rowIndex + '-' + index}>{entry}</li>)}
+    let cellKey = rowIndex + '-' + columnIndex
+    if (cell === undefined) {
+      return <TableCell key={cellKey} />
+    } else if (cell.constructor === Array) {
+      return <TableCell key={cellKey}>
+        {cell.map((entry, index) => <li key={rowIndex + '-' + index}>{entry}</li>)}
       </TableCell>
     } else {
-      return <TableCell key={rowIndex + '-' + columnIndex}>{cell[1]}</TableCell>
+      return <TableCell key={cellKey}>{cell}</TableCell>
     }
   }
 
@@ -263,6 +298,7 @@ class SsbTable extends React.Component {
           title={title}
           numSelected={selected.length}
           onFilterChange={this.handleRequestFilter}
+          deleteSelected={this.props.deleteAPI ? this.deleteSelected : undefined }
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby='tableTitle'>
@@ -291,30 +327,25 @@ class SsbTable extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data
-                .filter(e => { return SsbTable.isMatch(e, this.state.filterBy) })
-                .sort(this.getSorting(order, orderBy))
-                .slice(page * rowsPerPage, Math.min(data.length, (page + 1) * rowsPerPage))
-                .map((row, index) => {
-                  const isSelected = this.isSelected(index)
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, index)}
-                      role='checkbox'
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={index}
-                      selected={isSelected}
-                    >
-                      <TableCell padding='checkbox'>
-                        <Checkbox checked={isSelected}/>
-                      </TableCell>
-                      {Object.entries(row).map((cell, colIndex) => SsbTable.printCell(index, colIndex, cell))}
-                    </TableRow>
-                  )
-                })
-              }
+              {this.getFilteredData().map((row, index) => {
+                const isSelected = this.isSelected(index)
+                return (
+                  <TableRow
+                    hover
+                    onClick={event => this.handleClick(event, index)}
+                    role='checkbox'
+                    aria-checked={isSelected}
+                    tabIndex={-1}
+                    key={index}
+                    selected={isSelected}
+                  >
+                    <TableCell padding='checkbox'>
+                      <Checkbox checked={isSelected}/>
+                    </TableCell>
+                    {header.map((value, colIndex) => SsbTable.printCell(index, colIndex, row[value[0]]))}
+                  </TableRow>
+                )
+              })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
                   <TableCell colSpan={header.length + 1} />

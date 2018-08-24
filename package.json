@@ -46,12 +46,13 @@
     "@material-ui/icons": "^2.0.0",
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.6",
-    "file-loader": "^0.10.0",
+    "file-loader": "^0.10.1",
     "imports-loader": "^0.7.0",
-    "jquery": "^3.1.1",
+    "jquery": "^3.3.1",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
-    "select2": "^4.0.3"
+    "select2": "^4.0.3",
+    "universal-cookie": "^3.0.4"
   },
   "keywords": [],
   "standard": {

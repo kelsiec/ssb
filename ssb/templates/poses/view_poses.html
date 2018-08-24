@@ -48,20 +48,6 @@
 
 {% block extra_js %}
   <script>
-    function removePoses(pose_id){
-      $.ajax('{% url "delete_pose" %}', {
-        type: "POST",
-        method: "POST",
-        data: {'pose_ids': [pose_id] },
-        dataType: "json",
-        success: function() {
-          $("tr").filter(function() {
-              return this.id == pose_id;
-          })[0].style.display = 'none';
-        },
-      });
-    }
-
     function removeFlows(flow_id){
       $.ajax('{% url "delete_flow" %}', {
         type: "POST",

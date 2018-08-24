@@ -20,6 +20,7 @@ class PoseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pose
         fields = (
+            'id',
             'english_name',
             'sanskrit_name',
             'breath',
@@ -89,7 +90,7 @@ def edit_pose(request, pose_id):
 
 def delete_pose(request):
     if request.POST:
-        pose_ids = request.POST.getlist('pose_ids[]')
+        pose_ids = request.POST.getlist('pose_ids')
         deleted_ids = []
         if len(pose_ids) > 0:
             for pose_id in pose_ids:
