@@ -1,6 +1,6 @@
-var path = require("path");
-var webpack = require('webpack');
-var BundleTracker = require('webpack-bundle-tracker');
+const path = require('path')
+require('webpack')
+const BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = {
   context: __dirname,
@@ -8,8 +8,8 @@ module.exports = {
   entry: './assets/js/index', // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
 
   output: {
-      path: path.resolve('./assets/bundles/'),
-      filename: "[name]-[hash].js",
+    path: path.resolve('./assets/bundles/'),
+    filename: '[name]-[hash].js',
   },
 
   mode: 'development',
@@ -21,35 +21,48 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
+        test: /\.(js|jsx)?$/,
+        include: [
+          path.resolve(__dirname, 'frontend'),
+          path.resolve(__dirname, 'node_modules/@material'),
+          path.resolve(__dirname, 'node_modules/@material-ui'),
+        ],
         use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        use: [ 'style-loader', 'css-loader' ],
+      },
+      // https://github.com/webpack-contrib/sass-loader/issues/466
+      {
+        test: /\.scss$/,
+        use: [{
+          loader: 'style-loader', // creates style nodes from JS strings
+        }, {
+          loader: 'css-loader', // translates CSS into CommonJS
+        }, {
+          loader: 'sass-loader', // compiles Sass to CSS
+          options: {
+            includePaths: [
+              path.resolve(__dirname, 'node_modules'),
+            ],
+          },
+        }],
       },
       {
-        test   : /\.(json|ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader : 'file-loader',
-        query:{
-          name:'[name]-[md5:hash:8].[ext]'
-        }
+        test: /\.(json|ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: 'file-loader',
+        query: {
+          name: '[name]-[md5:hash:8].[ext]',
+        },
       },
-    ]
+    ],
   },
 
   resolve: {
     modules: ['node_modules', 'bower_components'],
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
   },
 }

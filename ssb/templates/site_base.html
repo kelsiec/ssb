@@ -4,38 +4,40 @@
 
 <title>Safe Sequence Builder</title>
 
-{% block topbar_base %}
-  <section class="section">
-    <div class="container">
-          <div id="topnav" class="columns"><!-- React --></div>
+{% block sidenav %}
+  <div class="mdc-drawer mdc-drawer--dismissible">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item mdc-list-item--activated" href="#" aria-selected="true">
+          <span class="mdc-list-item__text">View Poses</span>
+        </a>
+        <a class="mdc-list-item" href="#">
+          <span class="mdc-list-item__text">Submit a Pose</span>
+        </a>
+        <a class="mdc-list-item" href="#">
+          <span class="mdc-list-item__text">Build a Sequence</span>
+        </a>
+      </nav>
     </div>
-  </section>
+  </div>
 {% endblock %}
 
-{% block body_base %}
-  {% if messages %}
-    <div class="container-fluid">
-      <div id="messages-div" class="col-md-12">
-        <ul id="messages">
-          {% for message in messages %}
-            <div id="message_{{ forloop.counter }}" class="alert alert-{{ message.tags }}">
-              <a href="#" class="msg_clear" onclick="$('#message_{{ forloop.counter }}').fadeOut(); return false;">
-                <small>clear</small></a> {{ message|safe }}
-            </div>
-          {% endfor %}
-        </ul>
+{% block content_base %}
+  <div class="mdc-drawer-app-content">
+    <header class="mdc-top-app-bar app-bar" id="app-bar">
+      <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+          <a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">
+            <i class="material-icons">menu</i>
+          </a>
+        </section>
       </div>
+    </header>
+    <div class="container">
+      {% block content %} {% endblock %}
+      <div id="content" class="columns"><!-- React --></div>
     </div>
-  {% endif %}
-{% endblock %}
-
-{% block content %}
-{% endblock %}
-
-{% block styles %}
-  {% block extra_style %}
-    <link href="/static/css/select2.min.css" rel="stylesheet" />
-  {% endblock %}
+  </div>
 {% endblock %}
 
 {% block extra_body_base %}
@@ -43,6 +45,6 @@
   {% csrf_token %}
   <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-{% endblock %}
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-{% block extra_js %}{% endblock %}
+{% endblock %}
