@@ -1,24 +1,23 @@
-import {MDCDrawer} from '@material/drawer'
-import {MDCTopAppBar} from '@material/top-app-bar'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import { BrowserRouter, Route } from 'react-router-dom'
 
 import '../css/App.scss'
-import './PoseTable'
+import Nav from './Nav.js'
+import PoseTable from './PoseTable'
 
-const drawer = MDCDrawer.attachTo(document.querySelector('.mdc-drawer'))
-drawer.open = true
+class App extends React.Component {
+  render () {
+    return (
+      <BrowserRouter>
+        <div>
+          <Route path="/" component={Nav} />
+          <Route exact path="/poses/view_poses" component={PoseTable} />
+        </div>
+      </BrowserRouter>
+    )
+  }
+}
 
-const listEl = document.querySelector('.mdc-drawer .mdc-list')
-const mainContentEl = document.body.querySelector('.mdc-drawer-app-content')
-
-listEl.addEventListener('click', (event) => {
-  mainContentEl.querySelector('input, button').focus()
-})
-
-const topAppBar = new MDCTopAppBar(document.getElementById('app-bar'))
-topAppBar.listen('MDCTopAppBar:nav', function () {
-  drawer.open = !drawer.open
-})
-
-mainContentEl.addEventListener('click', () => {
-  drawer.open = false
-})
+ReactDOM.render(<App />, document.getElementById('app'))

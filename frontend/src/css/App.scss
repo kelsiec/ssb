@@ -1,2 +1,6 @@
 @import "~@material/drawer/mdc-drawer";
 @import "~@material/list/mdc-list";
+
+.mdc-list-item.active {
+  color: teal;
+}

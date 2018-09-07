@@ -4,41 +4,11 @@
 
 <title>Safe Sequence Builder</title>
 
-{% block sidenav %}
-  <div class="mdc-drawer mdc-drawer--dismissible">
-    <div class="mdc-drawer__content">
-      <nav class="mdc-list">
-        <a class="mdc-list-item mdc-list-item--activated" href="#" aria-selected="true">
-          <span class="mdc-list-item__text">View Poses</span>
-        </a>
-        <a class="mdc-list-item" href="#">
-          <span class="mdc-list-item__text">Submit a Pose</span>
-        </a>
-        <a class="mdc-list-item" href="#">
-          <span class="mdc-list-item__text">Build a Sequence</span>
-        </a>
-      </nav>
-    </div>
-  </div>
-{% endblock %}
 
 {% block content_base %}
-  <div class="mdc-drawer-app-content">
-    <header class="mdc-top-app-bar app-bar" id="app-bar">
-      <div class="mdc-top-app-bar__row">
-        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-          <a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">
-            <i class="material-icons">menu</i>
-          </a>
-        </section>
-      </div>
-    </header>
-    <div class="container">
-      {% block content %} {% endblock %}
-      <div id="content" class="columns"><!-- React --></div>
-    </div>
-  </div>
+  <div id="app"></div>
 {% endblock %}
+
 
 {% block extra_body_base %}
   {% render_bundle 'main' %}
