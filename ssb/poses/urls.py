@@ -14,12 +14,10 @@ from .views import (
     get_body_parts,
     get_effects,
     get_leg_variations,
-    view_poses,
 )
 
 urlpatterns = [
     url(r'^poses/$', PoseListCreate.as_view(), name='get_poses'),
-    url(r'^view_poses/$', view_poses, name='view_poses'),
     url(r'^create_pose/$', create_pose, name='create_pose'),
     url(r'^edit_pose/(?P<pose_id>\d+)$', edit_pose, name='edit_pose'),
     url(r'^delete_pose/$', delete_pose, name='delete_pose'),

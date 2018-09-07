@@ -11,7 +11,7 @@ from rest_framework import serializers
 from rest_framework.generics import ListCreateAPIView
 
 from .forms import EffectForm, FlowForm, PoseForm, PoseVariationForm
-from .models import ArmVariation, BodyPart, Effect, Flow, LegVariation, OrderedPose, Pose, PoseVariation
+from .models import ArmVariation, BodyPart, Effect, Flow, LegVariation, OrderedPose, Pose
 
 logger = logging.getLogger(__name__)
 
@@ -40,15 +40,6 @@ class PoseSerializer(serializers.ModelSerializer):
 class PoseListCreate(ListCreateAPIView):
     queryset = Pose.objects.all()
     serializer_class = PoseSerializer
-
-
-def view_poses(request):
-    ctx = {
-        'poses': list(Pose.objects.all()) + list(PoseVariation.objects.all()),
-        'flows': Flow.objects.all()
-    }
-
-    return render(request, 'poses/view_poses.html', ctx)
 
 
 def create_pose(request):
