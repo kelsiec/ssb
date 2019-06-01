@@ -11,9 +11,34 @@ from rest_framework import serializers
 from rest_framework.generics import ListCreateAPIView
 
 from .forms import EffectForm, FlowForm, PoseForm, PoseVariationForm
-from .models import ArmVariation, BodyPart, Effect, Flow, LegVariation, OrderedPose, Pose
+from .models import (
+    ArmVariation,
+    BodyPart,
+    Breath,
+    Effect,
+    Flow,
+    LegVariation,
+    OrderedPose,
+    Pose
+)
 
 logger = logging.getLogger(__name__)
+
+
+class BreathSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Breath
+        fields = (
+            'id',
+            'direction',
+        )
+
+    direction = serializers.CharField(source='get_direction_display')
+
+
+class BreathListCreate(ListCreateAPIView):
+    queryset = Breath.objects.all()
+    serializer_class = BreathSerializer
 
 
 class PoseSerializer(serializers.ModelSerializer):
@@ -44,17 +69,23 @@ class PoseListCreate(ListCreateAPIView):
 
 def create_pose(request):
     pose_form = PoseForm(request.POST or None)
+    status_code = 200
+    messages = []
 
-    if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
+    if request.POST:
         if pose_form.is_valid():
             pose_form.save()
-            pose_form = PoseForm(None)
+            messages.append({'message': "Pose added successfully", "variant": "success"})
         else:
-            logger.error(pose_form.errors)
+            status_code = 400
+            for error_field, errors in pose_form.errors.as_data().items():
+                for error in errors:
+                    messages.append({
+                        'message': "{}: {}".format(error_field.title().replace("_", " "), ", ".join(error.messages)),
+                        "variant": "error"
+                    })
 
-    effect_form = EffectForm(None)
-
-    return render(request, 'poses/create_or_modify_pose.html', {'effect_form': effect_form, 'pose_form': pose_form})
+    return HttpResponse(json.dumps({'messages': messages}), status=status_code, content_type="application/json")
 
 
 def edit_pose(request, pose_id):
@@ -227,15 +258,39 @@ def get_effects(request):
             if query in str(effect):
                 effects.append(effect)
 
-    fragments = []
+    options = []
     for effect in effects:
-        fragments.append({'text': str(effect), 'id': effect.id})
-    fragments.sort(key=lambda fragment: fragment['text'])
+        options.append({'label': str(effect), 'value': effect.id})
+    options.sort(key=lambda fragment: fragment['label'])
 
-    data = {
-        "results": fragments,
-    }
-    return JsonResponse(data)
+    return JsonResponse(options, safe=False)
+
+
+def get_challenge_levels(request):
+    options = []
+    for choice in Pose.CHALLENGE_LEVEL_CHOICES:
+        options.append({'label': choice[1], 'value': choice[0]})
+    options.sort(key=lambda fragment: fragment['label'])
+
+    return JsonResponse(options, safe=False)
+
+
+def get_position_classifications(request):
+    options = []
+    for choice in Pose.POSITION_CLASSIFICATION_CHOICES:
+        options.append({'label': choice[1], 'value': choice[0]})
+    options.sort(key=lambda fragment: fragment['label'])
+
+    return JsonResponse(options, safe=False)
+
+
+def get_spinal_classifications(request):
+    options = []
+    for choice in Pose.SPINAL_CLASSIFICATION_CHOICES:
+        options.append({'label': choice[1], 'value': choice[0]})
+    options.sort(key=lambda fragment: fragment['label'])
+
+    return JsonResponse(options, safe=False)
 
 
 def get_body_parts(request):

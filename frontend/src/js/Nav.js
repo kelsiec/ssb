@@ -4,11 +4,11 @@ import { NavLink } from 'react-router-dom'
 
 import { MDCDrawer } from '@material/drawer/index'
 import { MDCTopAppBar } from '@material/top-app-bar/index'
+import MenuIcon from '@material-ui/icons/Menu'
 
 class Nav extends React.Component {
   componentDidMount () {
     let drawer = MDCDrawer.attachTo(document.getElementById('drawer'))
-    drawer.open = true
 
     const topAppBar = new MDCTopAppBar(document.getElementById('app-bar'))
     topAppBar.listen('MDCTopAppBar:nav', function () {
@@ -29,9 +29,9 @@ class Nav extends React.Component {
               <NavLink to="/poses/view_poses" className="mdc-list-item">
                 <span className="mdc-list-item__text">View Poses</span>
               </NavLink>
-              <a className="mdc-list-item" href="#">
+              <NavLink to="/poses/create_pose" className="mdc-list-item">
                 <span className="mdc-list-item__text">Submit a Pose</span>
-              </a>
+              </NavLink>
               <a className="mdc-list-item" href="#">
                 <span className="mdc-list-item__text">Build a Sequence</span>
               </a>
@@ -43,7 +43,7 @@ class Nav extends React.Component {
             <div className="mdc-top-app-bar__row">
               <section className="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
                 <a href="#" className="demo-menu material-icons mdc-top-app-bar__navigation-icon">
-                  <i className="material-icons"> menu </i>
+                  <i className="material-icons"><MenuIcon /></i>
                 </a>
               </section>
             </div>

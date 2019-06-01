@@ -1,6 +1,6 @@
 import React from 'react'
-import DataProvider from './DataProvider'
-import SsbTable from './Table'
+import DataProvider from '../DataProvider'
+import SsbTable from '../Table'
 
 const header = [
   ['english_name', 'English Name'],

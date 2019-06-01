@@ -7,14 +7,11 @@
 
 {% block content_base %}
   <div id="app"></div>
+  {% block content %} {% endblock %}
 {% endblock %}
 
 
 {% block extra_body_base %}
   {% render_bundle 'main' %}
   {% csrf_token %}
-  <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 {% endblock %}

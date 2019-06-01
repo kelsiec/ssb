@@ -1,9 +1,9 @@
 # Base
-Django==1.10.5
+Django==1.11.20
 flake8==3.5.0
 psycopg2==2.7.5
 django-crispy-forms
-djangorestframework==3.8.2
+djangorestframework==3.9.4
 
 # Dev
 django_debug_toolbar

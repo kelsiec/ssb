@@ -76,33 +76,5 @@
 
       $('#add-effect-modal').modal();
     }
-
-    function getEffectIds() {
-      return ['#id_benefits', '#id_preparation', '#id_compensation'];
-    }
-
-    function initializeEffectSelects() {
-      effect_ids = getEffectIds();
-      for (i in effect_ids) {
-        $(effect_ids[i]).select2({
-          ajax: {
-            url: '{% url "get_effects" %}',
-            contentType: "application/json",
-            dataType: 'json',
-            type: 'GET',
-            delay: 250,
-            data: function (term) {
-              return {
-                  q: term.term,
-              };
-            },
-            processResults: function (data, page) {
-              return { results: data.results };
-            },
-          },
-          width: '100%',
-        });
-      }
-    }
   </script>
 {% endblock %}
