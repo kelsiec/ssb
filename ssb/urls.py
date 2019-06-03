@@ -6,10 +6,9 @@ from ssb.views import entry
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-
-    url(r'^$', entry, name='entry'),
-
     url(r'^poses/', include('ssb.poses.urls')),
+    url(r'^.*$', entry, name='entry'),
+
 ]
 
 if settings.USE_TOOLBAR:
