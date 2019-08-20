@@ -29,7 +29,7 @@ class Effect(models.Model):
         (WARM, "Warm"),
     )
 
-    body_part = models.ForeignKey(BodyPart)
+    body_part = models.ForeignKey(BodyPart, on_delete=models.CASCADE)
     activation_type = models.IntegerField(choices=ACTIVATION_CHOICES)
 
     class Meta:
@@ -72,7 +72,9 @@ class Pose(models.Model):
     spinal_classification = models.IntegerField(choices=SPINAL_CLASSIFICATION_CHOICES)
     position_classification = models.IntegerField(choices=POSITION_CLASSIFICATION_CHOICES)
     challenge_level = models.IntegerField(choices=CHALLENGE_LEVEL_CHOICES)
-    breath = models.ForeignKey(Breath, default=Breath.BREATH_CHOICES[Breath.EXHALE][0])
+    breath = models.ForeignKey(
+        Breath, default=Breath.BREATH_CHOICES[Breath.EXHALE][0], on_delete=models.CASCADE
+    )
     benefits = models.ManyToManyField(Effect, related_name='pose_benefits')
     preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements', blank=True)
     compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements', blank=True)
@@ -123,7 +125,7 @@ class LegVariation(models.Model):
 class PoseVariation(models.Model):
     time = models.DateTimeField(auto_now=True)
 
-    parent_pose = models.ForeignKey(Pose)
+    parent_pose = models.ForeignKey(Pose, on_delete=models.CASCADE)
     description = models.CharField(max_length=256, blank=True, null=True)
 
     challenge_level = models.IntegerField(choices=Pose.CHALLENGE_LEVEL_CHOICES)
@@ -131,8 +133,8 @@ class PoseVariation(models.Model):
     preparation = models.ManyToManyField(Effect, related_name='variation_prepartion_requirements', blank=True)
     compensation = models.ManyToManyField(Effect, related_name='variation_compensation_requirements', blank=True)
 
-    arm_variation = models.ForeignKey(ArmVariation, blank=True, null=True)
-    leg_variation = models.ForeignKey(LegVariation, blank=True, null=True)
+    arm_variation = models.ForeignKey(ArmVariation, blank=True, null=True, on_delete=models.CASCADE)
+    leg_variation = models.ForeignKey(LegVariation, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.sanskrit_name:
@@ -219,5 +221,5 @@ class OrderedPose(models.Model):
         ordering = ['-pose_order']
 
     pose_order = models.PositiveIntegerField(db_index=True)
-    flow = models.ForeignKey(Flow)
-    pose = models.ForeignKey(Pose)
+    flow = models.ForeignKey(Flow, on_delete=models.CASCADE)
+    pose = models.ForeignKey(Pose, on_delete=models.CASCADE)

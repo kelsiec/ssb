@@ -1,5 +1,5 @@
 # Base
-Django==1.11.20
+Django==2.2.4
 flake8==3.5.0
 psycopg2==2.7.5
 django-crispy-forms
