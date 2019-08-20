@@ -1,7 +1,5 @@
 from django.conf.urls import url
 
-
-from ssb.views import entry
 from .views import (
     BreathListCreate,
     PoseListCreate,
