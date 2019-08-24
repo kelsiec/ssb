@@ -7,6 +7,7 @@ from ssb.views import entry
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^poses/', include('ssb.poses.urls')),
+    url(r'^sequences/', include('ssb.sequences.urls')),
     url(r'^.*$', entry, name='entry'),
 
 ]

@@ -32,9 +32,9 @@ class Nav extends React.Component {
               <NavLink to="/poses/create_pose" className="mdc-list-item">
                 <span className="mdc-list-item__text">Submit a Pose</span>
               </NavLink>
-              <a className="mdc-list-item" href="#">
+              <NavLink to="/sequences/new_sequence" className="mdc-list-item">
                 <span className="mdc-list-item__text">Build a Sequence</span>
-              </a>
+              </NavLink>
             </nav>
           </div>
         </div>

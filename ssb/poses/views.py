@@ -1,24 +1,19 @@
 import logging
 import json
 
-from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms import modelformset_factory
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render, reverse
 
 from rest_framework import serializers
 from rest_framework.generics import ListCreateAPIView
 
-from .forms import EffectForm, FlowForm, PoseForm, PoseVariationForm
+from .forms import EffectForm, PoseForm
 from .models import (
     ArmVariation,
     BodyPart,
     Breath,
     Effect,
-    Flow,
     LegVariation,
-    OrderedPose,
     Pose
 )
 
@@ -88,28 +83,6 @@ def create_pose(request):
     return HttpResponse(json.dumps({'messages': messages}), status=status_code, content_type="application/json")
 
 
-def edit_pose(request, pose_id):
-    try:
-        pose = Pose.objects.get(id=pose_id)
-    except Pose.DoesNotExist:
-        messages.add_message(request, messages.ERROR, "Pose id {} does not exist.".format(pose_id))
-        return redirect('view_poses')
-
-    pose_form = PoseForm(request.POST or None, instance=pose)
-
-    if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
-        if pose_form.is_valid():
-            pose_form.save()
-        else:
-            logger.error(pose_form.errors)
-
-    effect_form = EffectForm(None)
-
-    messages.add_message(request, messages.SUCCESS, "Pose updated!")
-
-    return render(request, 'poses/create_or_modify_pose.html', {'effect_form': effect_form, 'pose_form': pose_form})
-
-
 def delete_pose(request):
     if request.POST:
         pose_ids = request.POST.getlist('pose_ids')
@@ -122,117 +95,6 @@ def delete_pose(request):
                 except ObjectDoesNotExist:
                     pass
         return HttpResponse(json.dumps(pose_ids), content_type="application/json")
-    return HttpResponse('')
-
-
-def create_pose_variation(request):
-    pose_form = PoseVariationForm(request.POST or None)
-
-    if request.POST and PoseForm.SAVE_POSE_BUTTON_ID in request.POST.keys():
-        if pose_form.is_valid():
-            pose_form.save()
-            pose_form = PoseVariationForm(None)
-        else:
-            logger.error(pose_form.errors)
-
-    effect_form = EffectForm(None)
-
-    ctx = {'effect_form': effect_form, 'pose_form': pose_form}
-
-    return render(request, 'poses/create_or_modify_variation_pose.html', ctx)
-
-
-def create_flow(request):
-    flow_name_form = FlowForm(request.POST or None)
-    FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
-    formset = FlowFormset(request.POST or None)
-
-    if request.POST and FlowForm.SAVE_FLOW_BUTTON_ID in request.POST.keys():
-        if flow_name_form.is_valid() and formset.is_valid():
-            flow_instance = flow_name_form.save()
-            i = 0
-            for form in formset:
-                if form.is_valid():
-                    OrderedPose.objects.get_or_create(
-                        pose_order=i, flow=flow_instance, pose=form.cleaned_data['pose'])
-                else:
-                    logger.error(form.errors)
-                i += 1
-        else:
-            logger.error(flow_name_form.errors)
-            logger.error(formset.errors)
-
-    ctx = {
-        'flow_name_form': flow_name_form,
-        'formset': formset,
-        'form_action': reverse('create_flow')
-    }
-
-    return render(request, 'poses/create_or_modify_flow.html', ctx)
-
-
-def edit_flow(request, flow_id):
-    try:
-        flow = Flow.objects.get(id=flow_id)
-    except Pose.DoesNotExist:
-        messages.add_message(request, messages.ERROR, "Pose id {} does not exist.".format(flow_id))
-        return redirect('view_poses')
-
-    flow_name_form = FlowForm(request.POST or None, instance=flow)
-    FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
-    formset = FlowFormset(request.POST or None, queryset=OrderedPose.objects.filter(flow=flow))
-
-    if request.POST and FlowForm.SAVE_FLOW_BUTTON_ID in request.POST.keys():
-        if flow_name_form.is_valid() and formset.is_valid():
-            flow.name = flow_name_form.cleaned_data['name']
-            flow.save()
-
-            OrderedPose.objects.filter(flow=flow).delete()
-
-            i = 0
-            for form in formset:
-                logger.warning(form.cleaned_data)
-                if form.is_valid() and 'pose' in form.cleaned_data and not form.cleaned_data['DELETE']:
-                    OrderedPose.objects.get_or_create(
-                        pose_order=i, flow=flow, pose=form.cleaned_data['pose'])
-                else:
-                    messages.add_message(request, messages.ERROR, form.errors)
-                    logger.error(form.errors)
-                i += 1
-
-        else:
-            messages.add_message(request, messages.ERROR, flow_name_form.errors)
-            messages.add_message(request, messages.ERROR, formset.errors)
-            logger.error(flow_name_form.errors)
-            logger.error(formset.errors)
-
-        messages.add_message(request, messages.SUCCESS, "Flow updated!")
-        flow_name_form = FlowForm(request.POST or None, instance=flow)
-        FlowFormset = modelformset_factory(OrderedPose, fields=('pose',), can_delete=True)
-        formset = FlowFormset(request.POST or None, queryset=OrderedPose.objects.filter(flow=flow))
-
-    ctx = {
-        'flow_name_form': flow_name_form,
-        'formset': formset,
-        'form_action': reverse('edit_flow', args=[flow.id])
-    }
-
-    return render(request, 'poses/create_or_modify_flow.html', ctx)
-
-
-def delete_flow(request):
-    if request.POST:
-        flow_ids = request.POST.getlist('flow_ids[]')
-        deleted_ids = []
-        if len(flow_ids) > 0:
-            for flow_id in flow_ids:
-                try:
-                    OrderedPose.objects.filter(flow__id=flow_id).delete()
-                    Flow.objects.get(id=flow_id).delete()
-                    deleted_ids.append(flow_id)
-                except ObjectDoesNotExist:
-                    pass
-        return HttpResponse(json.dumps(flow_ids), content_type="application/json")
     return HttpResponse('')
 
 

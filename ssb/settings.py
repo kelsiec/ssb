@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
     "ssb",
     "ssb.poses",
+    "ssb.sequences",
 ]
 
 MIDDLEWARE = [
