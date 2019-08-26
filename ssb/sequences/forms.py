@@ -23,6 +23,10 @@ class SequenceForm(forms.ModelForm):
     def _save_m2m(self):
         pose_ids = self.data.getlist('poses')
         for i in range(len(pose_ids)):
-            OrderedPose.objects.get_or_create(
-                sequence=self.instance, pose_id=pose_ids[i], pose_order=i
+            OrderedPose.objects.update_or_create(
+                sequence=self.instance, pose_order=i, defaults={'pose_id': pose_ids[i]}
             )
+
+        for poses_to_delete in OrderedPose.objects.filter(
+                sequence=self.instance, pose_order__gte=len(pose_ids)):
+            poses_to_delete.delete()

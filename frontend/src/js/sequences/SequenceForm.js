@@ -1,6 +1,9 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
+
 import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
 
 import DragHandle from '@material-ui/icons/DragHandle'
@@ -39,26 +42,59 @@ const SortableContainer = sortableContainer(({children}) => {
   return <div>{children}</div>
 })
 
-class NewSequenceForm extends React.Component {
+class SequenceForm extends React.Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+  };
+
   constructor (props) {
     super(props)
 
     this.cookies = new Cookies()
 
+    this.sequenceId = this.props.match.params.id ? this.props.match.params.id : ''
+
     this.state = {
+      loading: this.sequenceId !== '',
       messages: [],
+      name: '',
       poses: [{ value: '', label: '' }],
     }
+  }
+
+  componentDidMount () {
+    if (this.sequenceId !== '') {
+      this.loadSequence(this.sequenceId)
+    }
+  }
+
+  loadSequence (sequenceId) {
+    fetch('/sequences/sequence/' + sequenceId + '/')
+      .then(response => response.json())
+      .then(json => {
+        this.setState({
+          name: json['name'],
+          loading: false,
+          poses: json['poses'],
+        })
+      })
   }
 
   static loadPoseOptions () {
     return fetch('/poses/poses/')
       .then(response => response.json())
       .then(json => {
-        return {options: json.map((entry) => {
-          return {'value': entry['id'], 'label': entry['english_name']}
-        })}
+        return {
+          options: json.map((entry) => {
+            return {'value': entry['id'], 'label': entry['english_name']}
+          }),
+        }
       })
+  }
+
+  handleNameChange = (event) => {
+    this.setState({name: event.target.value})
   }
 
   handleAddPose = () => {
@@ -97,6 +133,7 @@ class NewSequenceForm extends React.Component {
       return response.json()
     }).then(function (data) {
       this.setState({messages: data['messages']})
+      this.props.history.push('/sequences/sequence/' + data['instance_id'])
     }.bind(this))
   }
 
@@ -108,7 +145,7 @@ class NewSequenceForm extends React.Component {
 
   render () {
     return (
-      <div className="container">
+      <div className="container" key={'container'}>
         <div id="messages">
           {this.state.messages.map((message, index) =>
             <VariantSnackbar
@@ -119,47 +156,52 @@ class NewSequenceForm extends React.Component {
           )}
         </div>
         <h3>Submit a New Sequence</h3>
-        <form id='sequence-form' onSubmit={this.handleSubmit}>
-          <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')} />
-          <div className="container" style={{display: 'flex', width: '50%', marginBottom: 20}}>
-            <TextField
-              fullWidth={true}
-              label="Sequence Name"
-              id='sequence-name'
-              name='sequence-name'
-              required
-            />
-          </div>
-          <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
-            { this.state.poses.map((pose, index) => (
-              <SortableItem key={'pose-li-' + index} index={index} value={
-                <div style={{display: 'flex', width: '100%'}}>
-                  <Select.Async
-                    key={'pose-' + index}
-                    name="poses"
-                    placeholder="Poses"
-                    loadOptions={NewSequenceForm.loadPoseOptions}
-                    onChange={(event) => this.handlePoseChange(event, index)}
-                    value={this.state.poses[index]}
-                  />
-                  <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
-                </div>
+        {this.state.loading ? <CircularProgress/> :
+          <form id='sequence-form' onSubmit={this.handleSubmit}>
+            <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')}/>
+            <input type='hidden' name='sequence-id' value={this.sequenceId} />
+            <div className="container" style={{display: 'flex', width: '50%', marginBottom: 20}}>
+              <TextField
+                fullWidth={true}
+                label="Sequence Name"
+                id='sequence-name'
+                name='sequence-name'
+                required
+                value={this.state.name}
+                onChange={this.handleNameChange}
+              />
+            </div>
+            <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
+              {this.state.poses.map((pose, index) => (
+                <SortableItem key={'pose-li-' + index} index={index} value={
+                  <div style={{display: 'flex', width: '100%'}}>
+                    <Select.Async
+                      key={'pose-' + index}
+                      name="poses"
+                      placeholder="Poses"
+                      loadOptions={SequenceForm.loadPoseOptions}
+                      onChange={(event) => this.handlePoseChange(event, index)}
+                      value={this.state.poses[index]}
+                    />
+                    <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
+                  </div>
 
-              } />
-            ))}
-          </SortableContainer>
-          <Button onClick={this.handleAddPose} color="secondary">
-            Add Pose
-          </Button>
-          <div className="container" style={{display: 'flex'}}>
-            <Button name="save_pose" variant="contained" color="primary" type="submit">
-              Submit
+                }/>
+              ))}
+            </SortableContainer>
+            <Button onClick={this.handleAddPose} color="secondary">
+              Add Pose
             </Button>
-          </div>
-        </form>
+            <div className="container" style={{display: 'flex'}}>
+              <Button name="save_pose" variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </div>
+          </form>
+        }
       </div>
     )
   }
 }
 
-export default NewSequenceForm
+export default SequenceForm
