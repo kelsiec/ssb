@@ -3,10 +3,28 @@ import json
 
 from django.http import HttpResponse, JsonResponse
 
+from rest_framework import serializers
+from rest_framework.generics import ListCreateAPIView
+
 from .forms import SequenceForm
 from .models import Sequence
 
 logger = logging.getLogger(__name__)
+
+
+class SequenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sequence
+        fields = (
+            'id',
+            'name',
+            'creation_time',
+        )
+
+
+class SequenceListCreate(ListCreateAPIView):
+    queryset = Sequence.objects.all()
+    serializer_class = SequenceSerializer
 
 
 def get_sequence(request, sequence_id):

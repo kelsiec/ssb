@@ -27,13 +27,13 @@ class Nav extends React.Component {
           <div className="mdc-drawer__content">
             <nav className="mdc-list">
               <NavLink to="/poses/view_poses" className="mdc-list-item">
-                <span className="mdc-list-item__text">View Poses</span>
+                <span className="mdc-list-item__text">Pose Library</span>
               </NavLink>
               <NavLink to="/poses/create_pose" className="mdc-list-item">
                 <span className="mdc-list-item__text">Submit a Pose</span>
               </NavLink>
-              <NavLink to="/sequences/sequence/" className="mdc-list-item">
-                <span className="mdc-list-item__text">Build a Sequence</span>
+              <NavLink to="/sequences/" className="mdc-list-item">
+                <span className="mdc-list-item__text">Sequences</span>
               </NavLink>
             </nav>
           </div>

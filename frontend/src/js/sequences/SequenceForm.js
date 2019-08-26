@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import TextField from '@material-ui/core/TextField'
 
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import DragHandle from '@material-ui/icons/DragHandle'
 import DeleteIcon from '@material-ui/icons/Delete'
 
@@ -154,6 +155,11 @@ class SequenceForm extends React.Component {
               variant={message['variant']}
             />
           )}
+        </div>
+        <div
+          style={{cursor: 'pointer', verticalAlign: 'middle'}}
+          onClick={event => this.props.history.push('/sequences/')} >
+          <ArrowBackIosIcon /> Back to All Sequences
         </div>
         <h3>Submit a New Sequence</h3>
         {this.state.loading ? <CircularProgress/> :

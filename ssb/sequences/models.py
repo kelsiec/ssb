@@ -5,6 +5,7 @@ from ssb.poses.models import Pose
 
 class Sequence(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    creation_time = models.DateField(auto_now=True)
     poses = models.ManyToManyField(
         Pose,
         related_name='multi_pose_flow',

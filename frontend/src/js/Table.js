@@ -322,7 +322,7 @@ class SsbTable extends React.Component {
           deleteSelected={this.props.deleteEndpoint ? this.deleteSelected : undefined }
         />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby='tableTitle'>
+          <Table className={classes.table}>
             <TableHead>
               <TableRow>
                 <TableCell padding='checkbox'>
@@ -345,7 +345,7 @@ class SsbTable extends React.Component {
                     </Tooltip>
                   </TableCell>
                 })}
-                {this.navRoute !== undefined && <TableCell /> }
+                {this.props.navRoute !== undefined && <TableCell /> }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -365,9 +365,12 @@ class SsbTable extends React.Component {
                         <Checkbox checked={isSelected}/>
                       </TableCell>
                       {header.map((value, colIndex) => SsbTable.printCell(index, colIndex, row[value[0]]))}
-                      {this.navRoute !== undefined &&
+                      {this.props.navRoute !== undefined &&
                         <TableCell>
-                          <ArrowForwardIosIcon onClick={this.handleGoClick} />
+                          <ArrowForwardIosIcon
+                            style={{cursor: 'pointer'}}
+                            onClick={event => this.handleGoClick(event, row['id'])}
+                          />
                         </TableCell>}
                     </TableRow>
                   )
