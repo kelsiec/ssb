@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie'
 import PropTypes from 'prop-types'
 
 import Checkbox from '@material-ui/core/Checkbox'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
@@ -21,6 +22,7 @@ import Typography from '@material-ui/core/Typography'
 import { lighten } from '@material-ui/core/styles/colorManipulator'
 import { withStyles } from '@material-ui/core/styles'
 
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import DeleteIcon from '@material-ui/icons/Delete'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
@@ -124,14 +126,16 @@ class SsbTable extends React.Component {
   }
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    data: PropTypes.array.isRequired,
-    deleteAPI: PropTypes.string,
+    dataEndpoint: PropTypes.string.isRequired,
+    deleteEndpoint: PropTypes.string,
     header: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired,
     order: PropTypes.string,
     orderBy: PropTypes.number.isRequired,
     page: PropTypes.number,
     rowsPerPage: PropTypes.number,
     selected: PropTypes.array,
+    navRoute: PropTypes.string,
     title: PropTypes.string,
   }
 
@@ -139,15 +143,28 @@ class SsbTable extends React.Component {
     super(props)
 
     this.cookies = new Cookies()
+
     this.state = {
-      data: props.data,
+      data: [],
       filterBy: '',
+      loaded: false,
       order: props.order,
       orderBy: props.orderBy,
       selected: props.selected,
       rowsPerPage: props.rowsPerPage,
       page: props.page,
     }
+  }
+
+  componentDidMount () {
+    fetch(this.props.dataEndpoint)
+      .then(response => {
+        if (response.status !== 200) {
+          return this.setState({ placeholder: 'Something went wrong' })
+        }
+        return response.json()
+      })
+      .then(data => this.setState({ data: data, loaded: true }))
   }
 
   getSorting = (order, orderByIndex) => {
@@ -173,7 +190,7 @@ class SsbTable extends React.Component {
       formData.append('pose_ids', this.getFilteredData()[this.state.selected[i]]['id'])
     }
 
-    fetch(this.props.deleteAPI, {
+    fetch(this.props.deleteEndpoint, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -184,13 +201,17 @@ class SsbTable extends React.Component {
   }
 
   getFilteredData = () => {
-    return this.props.data
+    return this.state.data
       .filter(e => { return SsbTable.isMatch(e, this.state.filterBy) })
       .sort(this.getSorting(this.state.order, this.state.orderBy))
       .slice(
         this.state.page * this.state.rowsPerPage,
-        Math.min(this.props.data.length, (this.state.page + 1) * this.state.rowsPerPage)
+        Math.min(this.state.data.length, (this.state.page + 1) * this.state.rowsPerPage)
       )
+  }
+
+  handleGoClick = (event, id) => {
+    this.props.history.push(this.props.navRoute + id)
   }
 
   handleRequestFilter = event => {
@@ -210,13 +231,13 @@ class SsbTable extends React.Component {
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState(state => ({ selected: state.data.map((n, index) => index) }))
-      return
+      this.setState({ selected: this.state.data.map((n, index) => index) })
+    } else {
+      this.setState({selected: []})
     }
-    this.setState({ selected: [] })
   }
 
-  handleClick = (event, id) => {
+  handleSelectRow = (event, id) => {
     const { selected } = this.state
     const selectedIndex = selected.indexOf(id)
     let newSelected = []
@@ -298,7 +319,7 @@ class SsbTable extends React.Component {
           title={title}
           numSelected={selected.length}
           onFilterChange={this.handleRequestFilter}
-          deleteSelected={this.props.deleteAPI ? this.deleteSelected : undefined }
+          deleteSelected={this.props.deleteEndpoint ? this.deleteSelected : undefined }
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby='tableTitle'>
@@ -324,33 +345,39 @@ class SsbTable extends React.Component {
                     </Tooltip>
                   </TableCell>
                 })}
+                {this.navRoute !== undefined && <TableCell /> }
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.getFilteredData().map((row, index) => {
-                const isSelected = this.isSelected(index)
-                return (
-                  <TableRow
-                    hover
-                    onClick={event => this.handleClick(event, index)}
-                    role='checkbox'
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={index}
-                    selected={isSelected}
-                  >
-                    <TableCell padding='checkbox'>
-                      <Checkbox checked={isSelected}/>
-                    </TableCell>
-                    {header.map((value, colIndex) => SsbTable.printCell(index, colIndex, row[value[0]]))}
+              {this.state.loading ? <CircularProgress/> : [
+                this.getFilteredData().map((row, index) => {
+                  const isSelected = this.isSelected(index)
+                  return (
+                    <TableRow
+                      hover
+                      role='checkbox'
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={index}
+                      selected={isSelected}
+                    >
+                      <TableCell onClick={event => this.handleSelectRow(event, index)} padding='checkbox'>
+                        <Checkbox checked={isSelected}/>
+                      </TableCell>
+                      {header.map((value, colIndex) => SsbTable.printCell(index, colIndex, row[value[0]]))}
+                      {this.navRoute !== undefined &&
+                        <TableCell>
+                          <ArrowForwardIosIcon onClick={this.handleGoClick} />
+                        </TableCell>}
+                    </TableRow>
+                  )
+                }),
+                emptyRows > 0 && (
+                  <TableRow key='empties' style={{height: 49 * emptyRows}}>
+                    <TableCell colSpan={header.length + 1} />
                   </TableRow>
-                )
-              })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={header.length + 1} />
-                </TableRow>
-              )}
+                ),
+              ]}
             </TableBody>
           </Table>
         </div>

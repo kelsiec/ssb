@@ -1,5 +1,3 @@
-import React from 'react'
-import DataProvider from '../DataProvider'
 import SsbTable from '../Table'
 
 const header = [
@@ -12,12 +10,13 @@ const header = [
   ['benefits', 'Benefits'],
 ]
 
-class PoseTable extends React.Component {
-  render () {
-    return <DataProvider
-      endpoint='/poses/poses/'
-      render={data => <SsbTable title='Poses' header={header} data={data} orderBy={0} deleteAPI='/poses/delete_pose/'/>}
-    />
+class PoseTable extends SsbTable {
+  static defaultProps = {
+    dataEndpoint: '/poses/poses/',
+    deleteEndpoint: '/poses/delete_pose/',
+    header: header,
+    orderBy: 0,
+    title: 'Poses',
   }
 }
 
