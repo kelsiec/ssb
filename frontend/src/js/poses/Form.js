@@ -11,22 +11,25 @@ import 'react-select/dist/react-select.css'
 
 import VariantSnackbar from '../VariantSnackbar'
 
+const defaultState = {
+  breath: '',
+  benefitsOptions: null,
+  challengeLevel: null,
+  compensationOptions: null,
+  messages: [],
+  positionClassification: null,
+  preparationOptions: null,
+  spinalClassification: null,
+}
+
 class PoseForm extends React.Component {
   constructor (props) {
     super(props)
 
     this.cookies = new Cookies()
 
-    this.state = {
-      breath: '',
-      benefitsOptions: null,
-      challengeLevel: null,
-      compensationOptions: null,
-      messages: [],
-      positionClassification: null,
-      preparationOptions: null,
-      spinalClassification: null,
-    }
+    this.state = defaultState
+    this.state['messages'] = []
   }
 
   handleInputChange = (input, event) => {
@@ -48,22 +51,16 @@ class PoseForm extends React.Component {
       body: data,
     }).then(function (response) {
       if (response.ok) {
-        document.getElementById('pose-form').reset()
-
-        let inputs = document.querySelectorAll('#pose-form .Select-value')
-        for (let i = 0; i < inputs.length; i++) {
-          inputs[i].parentElement.removeChild(inputs[i])
-        }
+        this.setState(defaultState)
       }
-
       return response.json()
-    }).then(function (data) {
+    }.bind(this)).then(function (data) {
       this.setState({messages: data['messages']})
     }.bind(this))
   }
 
   static loadBreathOptions () {
-    return fetch('/poses/breath_directions')
+    return fetch('/poses/breath_directions/')
       .then(response => response.json())
       .then(json => {
         return {options: json.map((entry) => {
@@ -73,25 +70,25 @@ class PoseForm extends React.Component {
   }
 
   static loadChallengeLevelOptions () {
-    return fetch('/poses/challenge_levels')
+    return fetch('/poses/challenge_levels/')
       .then(response => response.json())
       .then(json => { return {options: json} })
   }
 
   static loadPositionClassificationOptions () {
-    return fetch('/poses/position_classifications')
+    return fetch('/poses/position_classifications/')
       .then(response => response.json())
       .then(json => { return {options: json} })
   }
 
   static loadSpinalClassificationOptions () {
-    return fetch('/poses/spinal_classifications')
+    return fetch('/poses/spinal_classifications/')
       .then(response => response.json())
       .then(json => { return {options: json} })
   }
 
   loadEffectOptions = (input) => {
-    return fetch('/poses/effects')
+    return fetch('/poses/effects/')
       .then(response => response.json())
       .then(json => {
         return { options: json }
