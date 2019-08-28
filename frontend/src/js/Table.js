@@ -271,17 +271,18 @@ class SsbTable extends React.Component {
   }
 
   static isMatch = (object, toMatch) => {
+    toMatch = toMatch.toLowerCase()
     let isMatch = false
     if (toMatch) {
-      Object.values(object).forEach(value => {
+      Object.keys(object).filter((key) => key !== 'id').forEach((key) => {
+        let value = object[key]
         if (value.constructor === Array) {
           Object.values(value).forEach(subValue => {
-            if (subValue.includes(toMatch)) {
+            if (subValue.toLowerCase().includes(toMatch)) {
               isMatch = true
             }
           })
-        }
-        if (value.includes(toMatch)) {
+        } else if (value.toLowerCase().includes(toMatch)) {
           isMatch = true
         }
       })
