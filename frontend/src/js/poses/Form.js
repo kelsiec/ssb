@@ -27,7 +27,7 @@ class PoseForm extends React.Component {
     this.cookies = new Cookies()
 
     this.state = defaultState
-    this.state['messages'] = []
+    this.state.messages = []
   }
 
   handleInputChange = (input, event) => {
@@ -53,7 +53,7 @@ class PoseForm extends React.Component {
       }
       return response.json()
     }.bind(this)).then(function (data) {
-      this.setState({messages: data['messages']})
+      this.setState({ messages: data.messages })
     }.bind(this))
   }
 
@@ -94,33 +94,33 @@ class PoseForm extends React.Component {
           {this.state.messages.map((message, index) =>
             <VariantSnackbar
               key={'message-' + index}
-              message={<span>{message['message']}</span>}
-              variant={message['variant']}
+              message={<span>{message.message}</span>}
+              variant={message.variant}
             />
           )}
         </div>
         <h3>Submit a New Pose</h3>
         <form id='pose-form' onSubmit={this.handleSubmit}>
-          <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')} />
-          <div className="container" style={{display: 'flex', marginBottom: 20}}>
+          <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')}/>
+          <div className="container" style={{ display: 'flex', marginBottom: 20 }}>
             <TextField
               fullWidth={true}
               label="English Name"
               name="english_name"
               required
-              style={{marginRight: 20}}
+              style={{ marginRight: 20 }}
             />
             <TextField
               fullWidth={true}
               label="Sanskrit Name"
               name="sanskrit_name"
               required
-              style={{marginRight: 20}}
+              style={{ marginRight: 20 }}
             />
-            <div style={{width: '100%'}} />
-            <div style={{width: '100%'}} />
+            <div style={{ width: '100%' }}/>
+            <div style={{ width: '100%' }}/>
           </div>
-          <div className="container" style={{display: 'flex', marginBottom: 20}}>
+          <div className="container" style={{ display: 'flex', marginBottom: 20 }}>
             <AsyncSelect
               defaultOptions
               loadOptions={PoseForm.loadBreathOptions}
@@ -129,7 +129,7 @@ class PoseForm extends React.Component {
               placeholder="Breath Direction"
               required
               value={this.state.breath}
-              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
+              styles={{ container: base => ({ ...base, flex: 1, paddingRight: 10 }) }}
             />
             <AsyncSelect
               defaultOptions
@@ -139,7 +139,7 @@ class PoseForm extends React.Component {
               placeholder="Spinal Classification"
               required
               value={this.state.spinalClassification}
-              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
+              styles={{ container: base => ({ ...base, flex: 1, paddingRight: 10 }) }}
             />
             <AsyncSelect
               defaultOptions
@@ -149,7 +149,7 @@ class PoseForm extends React.Component {
               placeholder="Body Position"
               required
               value={this.state.positionClassification}
-              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
+              styles={{ container: base => ({ ...base, flex: 1, paddingRight: 10 }) }}
             />
             <AsyncSelect
               defaultOptions
@@ -159,10 +159,10 @@ class PoseForm extends React.Component {
               placeholder="Challenge Level"
               required
               value={this.state.challengeLevel}
-              styles={{container: base => ({...base, flex: 1})}}
+              styles={{ container: base => ({ ...base, flex: 1 }) }}
             />
           </div>
-          <div className="container" style={{display: 'flex', marginBottom: 20}}>
+          <div className="container" style={{ display: 'flex', marginBottom: 20 }}>
             <AsyncSelect
               defaultOptions
               loadOptions={PoseForm.loadEffectOptions}
@@ -172,7 +172,7 @@ class PoseForm extends React.Component {
               placeholder="Benefits"
               required
               value={this.state.benefitsOptions}
-              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
+              styles={{ container: base => ({ ...base, flex: 1, paddingRight: 10 }) }}
             />
             <AsyncSelect
               defaultOptions
@@ -182,7 +182,7 @@ class PoseForm extends React.Component {
               onChange={(event) => this.handleInputChange('preparationOptions', event)}
               placeholder="Preparation"
               value={this.state.preparationOptions}
-              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
+              styles={{ container: base => ({ ...base, flex: 1, paddingRight: 10 }) }}
             />
             <AsyncSelect
               defaultOptions
@@ -192,10 +192,10 @@ class PoseForm extends React.Component {
               onChange={(event) => this.handleInputChange('compensationOptions', event)}
               placeholder="Compensation"
               value={this.state.compensationOptions}
-              styles={{container: base => ({...base, flex: 1})}}
+              styles={{ container: base => ({ ...base, flex: 1 }) }}
             />
           </div>
-          <div className="container" style={{display: 'flex'}}>
+          <div className="container" style={{ display: 'flex' }}>
             <Button name="save_pose" variant="contained" color="primary" type="submit">
               Submit
             </Button>

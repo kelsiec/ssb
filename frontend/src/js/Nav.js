@@ -8,7 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 
 class Nav extends React.Component {
   componentDidMount () {
-    let drawer = MDCDrawer.attachTo(document.getElementById('drawer'))
+    const drawer = MDCDrawer.attachTo(document.getElementById('drawer'))
 
     const topAppBar = new MDCTopAppBar(document.getElementById('app-bar'))
     topAppBar.listen('MDCTopAppBar:nav', function () {
