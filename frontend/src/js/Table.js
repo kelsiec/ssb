@@ -20,16 +20,13 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 
 import { lighten } from '@material-ui/core/styles/colorManipulator'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import DeleteIcon from '@material-ui/icons/Delete'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
 const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
   highlight:
   theme.palette.type === 'light'
     ? {
@@ -66,7 +63,7 @@ let SsbTableToolbar = props => {
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography variant='title' id='tableTitle'>
+          <Typography variant='h6' id='tableTitle'>
             {title}
           </Typography>
         )}
@@ -103,19 +100,6 @@ SsbTableToolbar.propTypes = {
 
 SsbTableToolbar = withStyles(toolbarStyles)(SsbTableToolbar)
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-  },
-  table: {
-    minWidth: 1020,
-  },
-  tableWrapper: {
-    overflowX: 'auto',
-  },
-})
-
 class SsbTable extends React.Component {
   static defaultProps = {
     order: 'asc',
@@ -124,8 +108,8 @@ class SsbTable extends React.Component {
     rowsPerPage: 5,
     title: '',
   }
+
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     dataEndpoint: PropTypes.string.isRequired,
     deleteEndpoint: PropTypes.string,
     header: PropTypes.array.isRequired,
@@ -143,6 +127,12 @@ class SsbTable extends React.Component {
     super(props)
 
     this.cookies = new Cookies()
+    this.classes = makeStyles(theme => ({
+      root: {
+        width: '100%',
+        marginTop: theme.spacing(3),
+      },
+    }))
 
     this.state = {
       data: [],
@@ -168,7 +158,7 @@ class SsbTable extends React.Component {
   }
 
   getSorting = (order, orderByIndex) => {
-    let orderBy = this.props.header[orderByIndex][0]
+    const orderBy = this.props.header[orderByIndex][0]
     return function (a, b) {
       let result = 0
       if (a[orderBy] < b[orderBy]) result = -1
@@ -185,9 +175,9 @@ class SsbTable extends React.Component {
   }
 
   deleteSelected = () => {
-    let formData = new FormData()
+    const formData = new FormData()
     for (let i = 0; i < this.state.selected.length; i++) {
-      formData.append('pose_ids', this.getFilteredData()[this.state.selected[i]]['id'])
+      formData.append('pose_ids', this.getFilteredData()[this.state.selected[i]].id)
     }
 
     fetch(this.props.deleteEndpoint, {
@@ -233,7 +223,7 @@ class SsbTable extends React.Component {
     if (checked) {
       this.setState({ selected: this.state.data.map((n, index) => index) })
     } else {
-      this.setState({selected: []})
+      this.setState({ selected: [] })
     }
   }
 
@@ -275,7 +265,7 @@ class SsbTable extends React.Component {
     let isMatch = false
     if (toMatch) {
       Object.keys(object).filter((key) => key !== 'id').forEach((key) => {
-        let value = object[key]
+        const value = object[key]
         if (value.constructor === Array) {
           Object.values(value).forEach(subValue => {
             if (subValue.toLowerCase().includes(toMatch)) {
@@ -292,7 +282,7 @@ class SsbTable extends React.Component {
   }
 
   static printCell (rowIndex, columnIndex, cell) {
-    let cellKey = rowIndex + '-' + columnIndex
+    const cellKey = rowIndex + '-' + columnIndex
     if (cell === undefined) {
       return <TableCell key={cellKey} />
     } else if (cell.constructor === Array) {
@@ -305,7 +295,6 @@ class SsbTable extends React.Component {
   }
 
   render () {
-    const classes = this.props.classes
     const title = this.props.title
     const header = this.props.header
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state
@@ -315,15 +304,15 @@ class SsbTable extends React.Component {
     const rowCount = data.length
 
     return (
-      <Paper className={classes.root}>
+      <Paper className={this.classes.root}>
         <SsbTableToolbar
           title={title}
           numSelected={selected.length}
           onFilterChange={this.handleRequestFilter}
           deleteSelected={this.props.deleteEndpoint ? this.deleteSelected : undefined }
         />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table}>
+        <div style={{ overflowX: 'auto' }}>
+          <Table style={{ minWidth: 1020 }}>
             <TableHead>
               <TableRow>
                 <TableCell padding='checkbox'>
@@ -369,15 +358,15 @@ class SsbTable extends React.Component {
                       {this.props.navRoute !== undefined &&
                         <TableCell>
                           <ArrowForwardIosIcon
-                            style={{cursor: 'pointer'}}
-                            onClick={event => this.handleGoClick(event, row['id'])}
+                            style={{ cursor: 'pointer' }}
+                            onClick={event => this.handleGoClick(event, row.id)}
                           />
                         </TableCell>}
                     </TableRow>
                   )
                 }),
                 emptyRows > 0 && (
-                  <TableRow key='empties' style={{height: 49 * emptyRows}}>
+                  <TableRow key='empties' style={{ height: 49 * emptyRows }}>
                     <TableCell colSpan={header.length + 1} />
                   </TableRow>
                 ),
@@ -404,4 +393,4 @@ class SsbTable extends React.Component {
   }
 }
 
-export default withStyles(styles)(SsbTable)
+export default SsbTable

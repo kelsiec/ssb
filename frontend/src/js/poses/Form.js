@@ -3,11 +3,9 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 
-import Select from 'react-select'
+import AsyncSelect from 'react-select/async'
 
 import Cookies from 'universal-cookie'
-
-import 'react-select/dist/react-select.css'
 
 import VariantSnackbar from '../VariantSnackbar'
 
@@ -59,40 +57,40 @@ class PoseForm extends React.Component {
     }.bind(this))
   }
 
-  static loadBreathOptions () {
+  static loadBreathOptions (inputValue) {
     return fetch('/poses/breath_directions/')
       .then(response => response.json())
       .then(json => {
-        return {options: json.map((entry) => {
+        return json.map((entry) => {
           return {'value': entry['id'], 'label': entry['direction']}
-        })}
+        })
       })
   }
 
-  static loadChallengeLevelOptions () {
+  static loadChallengeLevelOptions (inputValue) {
     return fetch('/poses/challenge_levels/')
       .then(response => response.json())
-      .then(json => { return {options: json} })
+      .then(json => {
+        return json
+      })
   }
 
-  static loadPositionClassificationOptions () {
+  static loadPositionClassificationOptions (inputValue) {
     return fetch('/poses/position_classifications/')
       .then(response => response.json())
-      .then(json => { return {options: json} })
+      .then(json => { return json })
   }
 
-  static loadSpinalClassificationOptions () {
+  static loadSpinalClassificationOptions (inputValue) {
     return fetch('/poses/spinal_classifications/')
       .then(response => response.json())
-      .then(json => { return {options: json} })
+      .then(json => { return json })
   }
 
-  loadEffectOptions = (input) => {
+  static loadEffectOptions = (inputValue) => {
     return fetch('/poses/effects/')
       .then(response => response.json())
-      .then(json => {
-        return { options: json }
-      })
+      .then(json => { return json })
   }
 
   render () {
@@ -129,64 +127,78 @@ class PoseForm extends React.Component {
             <div style={{width: '100%'}} />
           </div>
           <div className="container" style={{display: 'flex', marginBottom: 20}}>
-            <Select.Async
+            <AsyncSelect
+              defaultOptions
               loadOptions={PoseForm.loadBreathOptions}
               name="breath"
               onChange={(event) => this.handleInputChange('breath', event)}
               placeholder="Breath Direction"
               required
               value={this.state.breath}
+              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
             />
-            <Select.Async
+            <AsyncSelect
+              defaultOptions
               loadOptions={PoseForm.loadSpinalClassificationOptions}
               name="spinal_classification"
               onChange={(event) => this.handleInputChange('spinalClassification', event)}
               placeholder="Spinal Classification"
               required
               value={this.state.spinalClassification}
+              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
             />
-            <Select.Async
+            <AsyncSelect
+              defaultOptions
               loadOptions={PoseForm.loadPositionClassificationOptions}
               name="position_classification"
               onChange={(event) => this.handleInputChange('positionClassification', event)}
               placeholder="Body Position"
               required
               value={this.state.positionClassification}
+              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
             />
-            <Select.Async
+            <AsyncSelect
+              defaultOptions
               loadOptions={PoseForm.loadChallengeLevelOptions}
               name="challenge_level"
               onChange={(event) => this.handleInputChange('challengeLevel', event)}
               placeholder="Challenge Level"
               required
               value={this.state.challengeLevel}
+              styles={{container: base => ({...base, flex: 1})}}
             />
           </div>
           <div className="container" style={{display: 'flex', marginBottom: 20}}>
-            <Select.Async
-              loadOptions={this.loadEffectOptions}
+            <AsyncSelect
+              defaultOptions
+              loadOptions={PoseForm.loadEffectOptions}
               multi
               name="benefits"
               onChange={(event) => this.handleInputChange('benefitsOptions', event)}
               placeholder="Benefits"
               required
               value={this.state.benefitsOptions}
+              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
             />
-            <Select.Async
-              loadOptions={this.loadEffectOptions}
+            <AsyncSelect
+              defaultOptions
+              loadOptions={PoseForm.loadEffectOptions}
               multi
               name="preparation"
               onChange={(event) => this.handleInputChange('preparationOptions', event)}
               placeholder="Preparation"
               value={this.state.preparationOptions}
+              styles={{container: base => ({...base, flex: 1, paddingRight: 10})}}
             />
-            <Select.Async
-              loadOptions={this.loadEffectOptions}
+            <AsyncSelect
+              defaultOptions
+              loadOptions={PoseForm.loadEffectOptions}
               multi
               name="compensation"
               onChange={(event) => this.handleInputChange('compensationOptions', event)}
               placeholder="Compensation"
               value={this.state.compensationOptions}
+              styles={{container: base => ({...base, flex: 1})}}
             />
           </div>
           <div className="container" style={{display: 'flex'}}>

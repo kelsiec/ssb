@@ -45,9 +45,11 @@ module.exports = {
         }, {
           loader: 'sass-loader', // compiles Sass to CSS
           options: {
-            includePaths: [
-              path.resolve(__dirname, 'node_modules'),
-            ],
+            sassOptions: {
+              includePaths: [
+                path.resolve(__dirname, 'node_modules'),
+              ],
+            },
           },
         }],
       },
@@ -62,7 +64,7 @@ module.exports = {
   },
 
   resolve: {
-    modules: ['node_modules', 'bower_components'],
+    modules: ['node_modules'],
     extensions: ['.js', '.jsx'],
   },
 }

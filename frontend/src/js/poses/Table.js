@@ -12,6 +12,7 @@ const header = [
 
 class PoseTable extends SsbTable {
   static defaultProps = {
+    ...SsbTable.defaultProps,
     dataEndpoint: '/poses/poses/',
     deleteEndpoint: '/poses/delete_pose/',
     header: header,

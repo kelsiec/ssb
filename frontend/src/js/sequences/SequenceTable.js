@@ -7,6 +7,7 @@ const header = [
 
 class SequenceTable extends SsbTable {
   static defaultProps = {
+    ...SsbTable.defaultProps,
     dataEndpoint: '/sequences/list_view/',
     deleteEndpoint: '/sequences/delete/sequence/',
     header: header,
