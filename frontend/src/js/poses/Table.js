@@ -3,7 +3,7 @@ import SsbTable from '../Table'
 const header = [
   ['english_name', 'English Name'],
   ['sanskrit_name', 'Sanskrit Name'],
-  ['breath', 'Breath'],
+  ['breath_display', 'Breath'],
   ['position_classification', 'Body Position'],
   ['spinal_classification', 'Spinal Position'],
   ['challenge_level', 'Challenge Level'],

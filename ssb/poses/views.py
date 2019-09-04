@@ -11,29 +11,12 @@ from .forms import EffectForm, PoseForm
 from .models import (
     ArmVariation,
     BodyPart,
-    Breath,
     Effect,
     LegVariation,
     Pose
 )
 
 logger = logging.getLogger(__name__)
-
-
-class BreathSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Breath
-        fields = (
-            'id',
-            'direction',
-        )
-
-    direction = serializers.CharField(source='get_direction_display')
-
-
-class BreathListCreate(ListCreateAPIView):
-    queryset = Breath.objects.all()
-    serializer_class = BreathSerializer
 
 
 class PoseSerializer(serializers.ModelSerializer):
@@ -44,13 +27,14 @@ class PoseSerializer(serializers.ModelSerializer):
             'english_name',
             'sanskrit_name',
             'breath',
+            'breath_display',
             'position_classification',
             'spinal_classification',
             'challenge_level',
             'benefits',
         )
 
-    breath = serializers.StringRelatedField()
+    breath_display = serializers.CharField(source='get_breath_display')
     position_classification = serializers.CharField(source='get_position_classification_display')
     spinal_classification = serializers.CharField(source='get_spinal_classification_display')
     challenge_level = serializers.CharField(source='get_challenge_level_display')
@@ -123,6 +107,15 @@ def get_effects(request):
     options = []
     for effect in effects:
         options.append({'label': str(effect), 'value': effect.id})
+    options.sort(key=lambda fragment: fragment['label'])
+
+    return JsonResponse(options, safe=False)
+
+
+def get_breath_directions(request):
+    options = []
+    for choice in Pose.BREATH_CHOICES:
+        options.append({'label': choice[1], 'value': choice[0]})
     options.sort(key=lambda fragment: fragment['label'])
 
     return JsonResponse(options, safe=False)

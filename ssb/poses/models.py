@@ -1,19 +1,6 @@
 from django.db import models
 
 
-class Breath(models.Model):
-    (INHALE, EXHALE) = (0, 1)
-    BREATH_CHOICES = (
-        (INHALE, "Inhale"),
-        (EXHALE, "Exhale"),
-    )
-
-    direction = models.IntegerField(choices=BREATH_CHOICES)
-
-    def __str__(self):
-        return self.BREATH_CHOICES[int(self.direction)][1]
-
-
 class BodyPart(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
@@ -40,6 +27,13 @@ class Effect(models.Model):
 
 
 class Pose(models.Model):
+    (INHALE, EXHALE, EITHER) = (0, 1, 2)
+    BREATH_CHOICES = (
+        (INHALE, "Inhale"),
+        (EXHALE, "Exhale"),
+        (EITHER, "Either")
+    )
+
     (TWIST, BACKBEND, LATERAL_BEND, FORWARD_BEND, EXTENSION) = (0, 1, 2, 3, 4)
     SPINAL_CLASSIFICATION_CHOICES = (
         (TWIST, "Twist"),
@@ -72,9 +66,7 @@ class Pose(models.Model):
     spinal_classification = models.IntegerField(choices=SPINAL_CLASSIFICATION_CHOICES)
     position_classification = models.IntegerField(choices=POSITION_CLASSIFICATION_CHOICES)
     challenge_level = models.IntegerField(choices=CHALLENGE_LEVEL_CHOICES)
-    breath = models.ForeignKey(
-        Breath, default=Breath.BREATH_CHOICES[Breath.EXHALE][0], on_delete=models.CASCADE
-    )
+    breath = models.IntegerField(choices=BREATH_CHOICES)
     benefits = models.ManyToManyField(Effect, related_name='pose_benefits')
     preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements', blank=True)
     compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements', blank=True)

@@ -10,7 +10,7 @@ import Cookies from 'universal-cookie'
 import VariantSnackbar from '../VariantSnackbar'
 
 const defaultState = {
-  breath: '',
+  breath: null,
   benefitsOptions: null,
   challengeLevel: null,
   compensationOptions: null,
@@ -60,19 +60,13 @@ class PoseForm extends React.Component {
   static loadBreathOptions (inputValue) {
     return fetch('/poses/breath_directions/')
       .then(response => response.json())
-      .then(json => {
-        return json.map((entry) => {
-          return {'value': entry['id'], 'label': entry['direction']}
-        })
-      })
+      .then(json => { return json })
   }
 
   static loadChallengeLevelOptions (inputValue) {
     return fetch('/poses/challenge_levels/')
       .then(response => response.json())
-      .then(json => {
-        return json
-      })
+      .then(json => { return json })
   }
 
   static loadPositionClassificationOptions (inputValue) {

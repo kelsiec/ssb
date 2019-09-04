@@ -26,7 +26,6 @@ const Drag = sortableHandle(() => <DragHandle/>)
 
 const SortableItem = sortableElement(({value}) => (
   <div className="container" style={{
-    display: 'flex',
     width: '50%',
     padding: 20,
     marginBottom: 20,
@@ -55,19 +54,27 @@ class SequenceForm extends React.Component {
     this.cookies = new Cookies()
 
     this.sequenceId = this.props.match.params.id ? this.props.match.params.id : ''
+    this.poseLibrary = []
+    this.breathDirections = ['Inhale', 'Exhale', 'Either']
 
     this.state = {
-      loading: this.sequenceId !== '',
+      loadingSequence: this.sequenceId !== '',
+      loadingPoses: true,
       messages: [],
       name: '',
-      poses: [{ value: '', label: '' }],
+      poses: [],
     }
+  }
+
+  isLoading () {
+    return this.state.loadingSequence || this.state.loadingPoses
   }
 
   componentDidMount () {
     if (this.sequenceId !== '') {
       this.loadSequence(this.sequenceId)
     }
+    this.loadPoses()
   }
 
   loadSequence (sequenceId) {
@@ -76,21 +83,23 @@ class SequenceForm extends React.Component {
       .then(json => {
         this.setState({
           name: json['name'],
-          loading: false,
+          loadingSequence: false,
           poses: json['poses'],
         })
       })
   }
 
-  static loadPoseOptions () {
-    return fetch('/poses/poses/')
+  loadPoses () {
+    fetch('/poses/poses/')
       .then(response => response.json())
       .then(json => {
-        return {
-          options: json.map((entry) => {
-            return {'value': entry['id'], 'label': entry['english_name']}
-          }),
-        }
+        this.poseLibrary = json.reduce(function (map, obj) {
+          map[obj['id']] = obj
+          return map
+        }, {})
+        this.setState({
+          loadingPoses: false,
+        })
       })
   }
 
@@ -100,7 +109,7 @@ class SequenceForm extends React.Component {
 
   handleAddPose = () => {
     this.setState({
-      poses: this.state.poses.concat([{ id: '', english_name: '' }]),
+      poses: this.state.poses.concat({}),
     })
   }
 
@@ -108,7 +117,24 @@ class SequenceForm extends React.Component {
     this.setState({
       poses: this.state.poses.map((item, mIndex) => {
         if (index !== mIndex) return item
-        return event
+        return {
+          'id': event['value'],
+          'breath_direction': this.poseLibrary[event['value']]['breath'],
+        }
+      }),
+    })
+  }
+
+  handleBreathChange = (event, index) => {
+    this.setState({
+      poses: this.state.poses.map((item, mIndex) => {
+        if (index !== mIndex) {
+          return item
+        } else {
+          let updatedItem = item
+          updatedItem['breath_direction'] = event['value']
+          return updatedItem
+        }
       }),
     })
   }
@@ -144,6 +170,15 @@ class SequenceForm extends React.Component {
     }))
   }
 
+  getPoseData (index, item) {
+    if (this.state.poses[index] != null &&
+      this.poseLibrary[this.state.poses[index]['id']] != null) {
+      return this.poseLibrary[this.state.poses[index]['id']][item]
+    } else {
+      return ''
+    }
+  }
+
   render () {
     return (
       <div className="container" key={'container'}>
@@ -158,11 +193,11 @@ class SequenceForm extends React.Component {
         </div>
         <div
           style={{cursor: 'pointer', verticalAlign: 'middle'}}
-          onClick={event => this.props.history.push('/sequences/')} >
+          onClick={_ => this.props.history.push('/sequences/')} >
           <ArrowBackIosIcon /> Back to All Sequences
         </div>
         <h3>Submit a New Sequence</h3>
-        {this.state.loading ? <CircularProgress/> :
+        {this.isLoading() ? <CircularProgress/> :
           <form id='sequence-form' onSubmit={this.handleSubmit}>
             <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')}/>
             <input type='hidden' name='sequence-id' value={this.sequenceId} />
@@ -179,19 +214,55 @@ class SequenceForm extends React.Component {
             </div>
             <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
               {this.state.poses.map((pose, index) => (
-                <SortableItem key={'pose-li-' + index} index={index} value={
-                  <div style={{display: 'flex', width: '100%'}}>
-                    <Select.Async
-                      key={'pose-' + index}
-                      name="poses"
-                      placeholder="Poses"
-                      loadOptions={SequenceForm.loadPoseOptions}
-                      onChange={(event) => this.handlePoseChange(event, index)}
-                      value={this.state.poses[index]}
-                    />
-                    <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
+                <SortableItem style={{width: '100%'}} key={'pose-li-' + index} index={index} value={
+                  <div>
+                    <div style={{display: 'flex', width: '100%', marginBottom: 5}}>
+                      <Select
+                        key={'pose-' + index}
+                        name="poses"
+                        placeholder="Poses"
+                        options={
+                          Object.entries(this.poseLibrary).map(([key, value]) => {
+                            return {'value': key, 'label': value['english_name']}
+                          })
+                        }
+                        onChange={(event) => this.handlePoseChange(event, index)}
+                        value={{
+                          'value': this.state.poses[index] != null ? this.state.poses[index]['id'] : '',
+                          'label': this.getPoseData(index, 'english_name'),
+                        }}
+                        styles={{ container: base => ({...base, flex: 1}) }}
+                      />
+                      <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
+                    </div>
+                    {this.state.poses[index] !== {} &&
+                      <div style={{width: '33%'}}>
+                        <Select
+                          key={'pose-breath-direction-' + index}
+                          name="pose-breath-direction"
+                          placeholder="Breath Direction"
+                          styles={{
+                            container: base => ({ ...base, flex: 1 }),
+                            control: base => ({
+                              ...base,
+                              backgroundColor: this.state.poses[index].breath_direction === 2 ? '#F1948A' : '#FFFFFF',
+                            }),
+                          }}
+                          options={
+                            this.breathDirections.filter((value, _) => value !== 'Either').map((value, index) => {
+                              return { 'value': index, 'label': value }
+                            })
+                          }
+                          onChange={(event) => this.handleBreathChange(event, index)}
+                          value={{
+                            'value': this.state.poses[index] != null ? this.state.poses[index]['breath_direction'] : '',
+                            'label': this.state.poses[index] != null ?
+                              this.breathDirections[this.state.poses[index]['breath_direction']] : '',
+                          }}
+                        />
+                      </div>
+                    }
                   </div>
-
                 }/>
               ))}
             </SortableContainer>

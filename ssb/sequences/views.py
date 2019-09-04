@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.generics import ListCreateAPIView
 
 from .forms import SequenceForm
-from .models import Sequence
+from .models import OrderedPose, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -35,11 +35,13 @@ def get_sequence(request, sequence_id):
         'poses': []
     }
 
-    for pose in sequence.poses.all():
+    for ordered_pose in OrderedPose.objects.filter(sequence=sequence):
         response['poses'].append({
-            'value': pose.id,
-            'label': pose.english_name
+            'id': ordered_pose.pose.id,
+            'breath_direction': ordered_pose.breath_override,
         })
+
+    logger.info(response)
 
     return JsonResponse(response, safe=False)
 

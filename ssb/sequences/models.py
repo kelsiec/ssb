@@ -42,9 +42,10 @@ class Sequence(models.Model):
 
 class OrderedPose(models.Model):
     class Meta:
-        ordering = ['-pose_order']
+        ordering = ['pose_order']
         unique_together = ('sequence', 'pose_order')
 
     pose_order = models.PositiveIntegerField(db_index=True)
     sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
     pose = models.ForeignKey(Pose, on_delete=models.CASCADE)
+    breath_override = models.IntegerField(choices=Pose.BREATH_CHOICES[0:-1])
