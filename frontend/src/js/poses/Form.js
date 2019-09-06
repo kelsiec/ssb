@@ -7,7 +7,7 @@ import AsyncSelect from 'react-select/async'
 
 import Cookies from 'universal-cookie'
 
-import VariantSnackbar from '../VariantSnackbar'
+import VariantSnackbar from '../nav/VariantSnackbar'
 
 const defaultState = {
   breath: null,

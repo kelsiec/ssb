@@ -1,4 +1,4 @@
-import SsbTable from '../Table'
+import SsbTable from '../table/Table'
 
 const header = [
   ['english_name', 'English Name'],

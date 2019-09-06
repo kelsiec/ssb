@@ -20,7 +20,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 
-import VariantSnackbar from '../VariantSnackbar'
+import VariantSnackbar from '../nav/VariantSnackbar'
 
 const Drag = sortableHandle(() => <DragHandle/>)
 

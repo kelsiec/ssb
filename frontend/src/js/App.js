@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter, Route } from 'react-router-dom'
 
 import '../css/App.scss'
-import Nav from './Nav.js'
+import Nav from './nav/Nav.js'
 
 import PoseForm from './poses/Form'
 import PoseTable from './poses/Table'
