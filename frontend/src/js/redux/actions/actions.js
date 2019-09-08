@@ -1,13 +1,15 @@
-export const addMessage = (messages) => {
+import { ADD_MESSAGES, REMOVE_MESSAGE } from '../types/MessagesTypes'
+
+export const addMessages = (messages) => {
   return {
-    type: 'addMessage',
+    type: ADD_MESSAGES,
     payload: messages,
   }
 }
 
-export const removeMessage = (index) => {
+export const removeMessage = (uid) => {
   return {
-    type: 'removeMessage',
-    payload: index,
+    type: REMOVE_MESSAGE,
+    payload: uid,
   }
 }

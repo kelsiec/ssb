@@ -50,7 +50,7 @@ const styles = theme => ({
 })
 
 function VariantSnackbar (props) {
-  const { classes, className, index, message, variant } = props
+  const { classes, className, message, uid, variant } = props
   const Icon = variantIcon[variant]
 
   return (
@@ -69,7 +69,7 @@ function VariantSnackbar (props) {
           aria-label="Close"
           color="inherit"
           className={classes.close}
-          onClick={() => props.dispatch(removeMessage(index))}
+          onClick={() => props.dispatch(removeMessage(uid))}
         >
           <CloseIcon className={classes.icon} />
         </IconButton>,
@@ -82,8 +82,8 @@ VariantSnackbar.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
   message: PropTypes.node,
+  uid: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
 }
 

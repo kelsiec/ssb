@@ -1,5 +1,7 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
+
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 
@@ -7,8 +9,7 @@ import AsyncSelect from 'react-select/async'
 
 import Cookies from 'universal-cookie'
 
-import { addMessage } from '../redux/actions/actions'
-import PropTypes from 'prop-types'
+import { showNotificationWithTimeout } from '../Messages'
 
 const defaultState = {
   breath: null,
@@ -52,7 +53,7 @@ class PoseForm extends React.Component {
       }
       return response.json()
     }.bind(this)).then(function (data) {
-      this.props.dispatch(addMessage(data.messages))
+      showNotificationWithTimeout(this.props.dispatch, data.messages)
     })
   }
 

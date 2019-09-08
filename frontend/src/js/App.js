@@ -1,8 +1,9 @@
 import React from 'react'
-
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { BrowserRouter, Route } from 'react-router-dom'
-
 import { connect } from 'react-redux'
+
+import PropTypes from 'prop-types'
 
 import '../css/App.scss'
 import Nav from './nav/Nav.js'
@@ -12,21 +13,28 @@ import PoseTable from './poses/Table'
 import SequenceForm from './sequences/SequenceForm'
 import SequenceTable from './sequences/SequenceTable'
 import VariantSnackbar from './nav/VariantSnackbar'
-import PropTypes from 'prop-types'
 
 class App extends React.Component {
   render () {
     return (
       <div className="container">
         <div id="messages">
-          {this.props.messagesReducer.messages.map((message, index) =>
-            <VariantSnackbar
-              key={'message-' + index}
-              message={<span>{message.message}</span>}
-              index={index}
-              variant={message.variant}
-            />
-          )}
+          <ReactCSSTransitionGroup
+            transitionName="message"
+            transitionEnter={true}
+            transitionEnterTimeout={1000}
+            transitionLeave={true}
+            transitionLeaveTimeout={1000}>
+            {this.props.messagesReducer.messages.map((message, index) =>
+              <VariantSnackbar
+                key={'message-' + index}
+                message={<span>{message.message}</span>}
+                uid={message.uid}
+                variant={message.variant}
+                style={{ bottom: 50 }}
+              />
+            )}
+          </ReactCSSTransitionGroup>
         </div>
         <BrowserRouter>
           <div>
@@ -43,7 +51,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  messagesReducer: PropTypes.func.isRequired,
+  messagesReducer: PropTypes.object.isRequired,
 }
 
 export default connect(state => ({ ...state }))(App)

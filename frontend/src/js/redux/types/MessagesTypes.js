@@ -1,0 +1,2 @@
+export const ADD_MESSAGES = 'ADD_MESSAGES'
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE'

@@ -20,7 +20,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 
-import { addMessage } from '../redux/actions/actions'
+import { showNotificationWithTimeout } from '../Messages'
 
 const Drag = sortableHandle(() => <DragHandle/>)
 
@@ -158,7 +158,7 @@ class SequenceForm extends React.Component {
     }).then(function (response) {
       return response.json()
     }).then(function (data) {
-      this.props.dispatch(addMessage(data.messages))
+      showNotificationWithTimeout(this.props.dispatch, data.messages)
       this.props.history.push('/sequences/sequence/' + data.instance_id)
     }.bind(this))
   }

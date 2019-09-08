@@ -1,15 +1,16 @@
+import { ADD_MESSAGES, REMOVE_MESSAGE } from '../types/MessagesTypes'
+
 export default (state = { messages: [] }, action) => {
   switch (action.type) {
-    case 'addMessage':
+    case ADD_MESSAGES:
       return {
         ...state,
         messages: state.messages.concat(action.payload),
       }
-    case 'removeMessage':
-      state.messages.splice(action.payload, 1)
+    case REMOVE_MESSAGE:
       return {
         ...state,
-        messages: state.messages,
+        messages: state.messages.filter((value) => value.uid !== action.payload),
       }
     default:
       return state
