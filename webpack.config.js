@@ -23,6 +23,7 @@ module.exports = {
       {
         test: /\.(js|jsx)?$/,
         include: [
+          path.resolve(__dirname, 'assets/js'),
           path.resolve(__dirname, 'frontend'),
           path.resolve(__dirname, 'node_modules/@material'),
           path.resolve(__dirname, 'node_modules/@material-ui'),

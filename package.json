@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./frontend/src/js/*",
     "lint::fix": "./node_modules/.bin/eslint --fix ./frontend/src/js/*",
-    "build": "webpack ./frontend/src/js/App.js",
-    "rebuild": "rm assets/bundles/main-* && webpack ./frontend/src/js/App.js"
+    "build": "webpack assets/js/index.js",
+    "rebuild": "rm assets/bundles/main-* && webpack assets/js/index.js"
   },
   "author": "",
   "license": "ISC",

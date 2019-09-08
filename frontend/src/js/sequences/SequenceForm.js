@@ -20,7 +20,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 
-import VariantSnackbar from '../nav/VariantSnackbar'
+import { addMessage } from '../redux/actions/actions'
 
 const Drag = sortableHandle(() => <DragHandle/>)
 
@@ -60,7 +60,6 @@ class SequenceForm extends React.Component {
     this.state = {
       loadingSequence: this.sequenceId !== '',
       loadingPoses: true,
-      messages: [],
       name: '',
       poses: [],
     }
@@ -159,7 +158,7 @@ class SequenceForm extends React.Component {
     }).then(function (response) {
       return response.json()
     }).then(function (data) {
-      this.setState({ messages: data.messages })
+      this.props.dispatch(addMessage(data.messages))
       this.props.history.push('/sequences/sequence/' + data.instance_id)
     }.bind(this))
   }
@@ -182,15 +181,6 @@ class SequenceForm extends React.Component {
   render () {
     return (
       <div className="container" key={'container'}>
-        <div id="messages">
-          {this.state.messages.map((message, index) =>
-            <VariantSnackbar
-              key={'message-' + index}
-              message={<span>{message.message}</span>}
-              variant={message.variant}
-            />
-          )}
-        </div>
         <div
           style={{ cursor: 'pointer', verticalAlign: 'middle' }}
           onClick={_ => this.props.history.push('/sequences/')}>
@@ -279,6 +269,10 @@ class SequenceForm extends React.Component {
       </div>
     )
   }
+}
+
+SequenceForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
 }
 
 export default SequenceForm

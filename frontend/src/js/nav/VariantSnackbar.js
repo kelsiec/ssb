@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error'
 import InfoIcon from '@material-ui/icons/Info'
@@ -11,6 +13,8 @@ import IconButton from '@material-ui/core/IconButton'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import WarningIcon from '@material-ui/icons/Warning'
 import { withStyles } from '@material-ui/core/styles'
+
+import { removeMessage } from '../redux/actions/actions'
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -37,7 +41,7 @@ const styles = theme => ({
   },
   iconVariant: {
     opacity: 0.9,
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   message: {
     display: 'flex',
@@ -46,7 +50,7 @@ const styles = theme => ({
 })
 
 function VariantSnackbar (props) {
-  const { classes, className, message, onClose, variant } = props
+  const { classes, className, index, message, variant } = props
   const Icon = variantIcon[variant]
 
   return (
@@ -65,7 +69,7 @@ function VariantSnackbar (props) {
           aria-label="Close"
           color="inherit"
           className={classes.close}
-          onClick={onClose}
+          onClick={() => props.dispatch(removeMessage(index))}
         >
           <CloseIcon className={classes.icon} />
         </IconButton>,
@@ -77,9 +81,10 @@ function VariantSnackbar (props) {
 VariantSnackbar.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
   message: PropTypes.node,
-  onClose: PropTypes.func,
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
 }
 
-export default withStyles(styles)(VariantSnackbar)
+export default connect(state => ({ ...state }))(withStyles(styles)(VariantSnackbar))

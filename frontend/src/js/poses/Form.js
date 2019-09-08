@@ -7,14 +7,14 @@ import AsyncSelect from 'react-select/async'
 
 import Cookies from 'universal-cookie'
 
-import VariantSnackbar from '../nav/VariantSnackbar'
+import { addMessage } from '../redux/actions/actions'
+import PropTypes from 'prop-types'
 
 const defaultState = {
   breath: null,
   benefitsOptions: null,
   challengeLevel: null,
   compensationOptions: null,
-  messages: [],
   positionClassification: null,
   preparationOptions: null,
   spinalClassification: null,
@@ -27,7 +27,6 @@ class PoseForm extends React.Component {
     this.cookies = new Cookies()
 
     this.state = defaultState
-    this.state.messages = []
   }
 
   handleInputChange = (input, event) => {
@@ -53,8 +52,8 @@ class PoseForm extends React.Component {
       }
       return response.json()
     }.bind(this)).then(function (data) {
-      this.setState({ messages: data.messages })
-    }.bind(this))
+      this.props.dispatch(addMessage(data.messages))
+    })
   }
 
   static loadBreathOptions (inputValue) {
@@ -90,15 +89,6 @@ class PoseForm extends React.Component {
   render () {
     return (
       <div className="container">
-        <div id="messages">
-          {this.state.messages.map((message, index) =>
-            <VariantSnackbar
-              key={'message-' + index}
-              message={<span>{message.message}</span>}
-              variant={message.variant}
-            />
-          )}
-        </div>
         <h3>Submit a New Pose</h3>
         <form id='pose-form' onSubmit={this.handleSubmit}>
           <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')}/>
@@ -204,6 +194,10 @@ class PoseForm extends React.Component {
       </div>
     )
   }
+}
+
+PoseForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
 }
 
 export default PoseForm
