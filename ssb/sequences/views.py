@@ -41,8 +41,6 @@ def get_sequence(request, sequence_id):
             'breath_direction': ordered_pose.breath_override,
         })
 
-    logger.info(response)
-
     return JsonResponse(response, safe=False)
 
 

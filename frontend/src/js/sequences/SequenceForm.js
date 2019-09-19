@@ -44,6 +44,7 @@ const SortableContainer = sortableContainer(({ children }) => {
 
 class SequenceForm extends React.Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   }
@@ -269,10 +270,6 @@ class SequenceForm extends React.Component {
       </div>
     )
   }
-}
-
-SequenceForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
 }
 
 export default SequenceForm
