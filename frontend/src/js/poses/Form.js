@@ -1,7 +1,9 @@
 import React from 'react'
 
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
+import { makeStyles, Typography } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 
@@ -28,6 +30,16 @@ class PoseForm extends React.Component {
     this.cookies = new Cookies()
 
     this.state = defaultState
+
+    this.classes = makeStyles(theme => ({
+      root: {
+        borderColor: 'yellow',
+        width: '100%',
+        marginRight: theme.spacing(3),
+        marginLeft: theme.spacing(3),
+      },
+    }))
+    console.log(this.classes)
   }
 
   handleInputChange = (input, event) => {
@@ -89,8 +101,8 @@ class PoseForm extends React.Component {
 
   render () {
     return (
-      <div className="container">
-        <h3>Submit a New Pose</h3>
+      <div className={classNames(this.classes.root)}>
+        <Typography variant="h6">Submit a New Pose</Typography>
         <form id='pose-form' onSubmit={this.handleSubmit}>
           <input type='hidden' name='csrfmiddlewaretoken' value={this.cookies.get('csrftoken')}/>
           <div className="container" style={{ display: 'flex', marginBottom: 20 }}>

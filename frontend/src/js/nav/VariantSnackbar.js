@@ -14,7 +14,7 @@ import SnackbarContent from '@material-ui/core/SnackbarContent'
 import WarningIcon from '@material-ui/icons/Warning'
 import { withStyles } from '@material-ui/core/styles'
 
-import { removeMessage } from '../redux/actions/actions'
+import { removeMessage } from '../redux/actions/messagesActions'
 
 const variantIcon = {
   success: CheckCircleIcon,

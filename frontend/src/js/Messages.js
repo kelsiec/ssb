@@ -1,4 +1,4 @@
-import { addMessages, removeMessage } from './redux/actions/actions'
+import { addMessages, removeMessage } from './redux/actions/messagesActions'
 
 export function showNotificationWithTimeout (dispatch, payload) {
   const uids = []

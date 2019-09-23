@@ -37,8 +37,8 @@ class App extends React.Component {
           </ReactCSSTransitionGroup>
         </div>
         <BrowserRouter>
-          <div>
-            <Route path="/" component={Nav} />
+          <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+            <Route path="/" render={(props) => <Nav {...props} {...this.props} />} />
             <Route exact path="/poses/create_pose" render={(props) => <PoseForm {...props} {...this.props} />} />
             <Route exact path="/poses/view_poses" render={(props) => <PoseTable {...props} {...this.props} />} />
             <Route exact path="/sequences/" render={(props) => <SequenceTable {...props} {...this.props} />} />
