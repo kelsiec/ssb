@@ -179,6 +179,23 @@ class SequenceForm extends React.Component {
     }
   }
 
+  breathDirectionColor (index) {
+    if (this.state.poses[index].breath_direction === 2) {
+      return '#F1948A'
+    } else if (
+      (
+        index < this.state.poses.length - 1 &&
+        this.state.poses[index].breath_direction === this.state.poses[index + 1].breath_direction) ||
+      (
+        index > 0 &&
+        this.state.poses[index].breath_direction === this.state.poses[index - 1].breath_direction)
+    ) {
+      return '#FFFF88'
+    } else {
+      return '#FFFFFF'
+    }
+  }
+
   render () {
     return (
       <div className="container" key={'container'}>
@@ -236,7 +253,7 @@ class SequenceForm extends React.Component {
                           container: base => ({ ...base, flex: 1 }),
                           control: base => ({
                             ...base,
-                            backgroundColor: this.state.poses[index].breath_direction === 2 ? '#F1948A' : '#FFFFFF',
+                            backgroundColor: this.breathDirectionColor(index),
                           }),
                         }}
                         options={
