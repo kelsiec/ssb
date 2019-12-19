@@ -109,7 +109,7 @@ class SequenceForm extends React.Component {
 
   handleAddPose = () => {
     this.setState({
-      poses: this.state.poses.concat({}),
+      poses: this.state.poses.concat({ id: -1, breath_direction: '' }),
     })
   }
 
@@ -171,7 +171,7 @@ class SequenceForm extends React.Component {
   }
 
   getPoseData (index, item) {
-    if (this.state.poses[index] != null &&
+    if (this.state.poses[index] != null && this.state.poses[index].id !== -1 &&
       this.poseLibrary[this.state.poses[index].id] != null) {
       return this.poseLibrary[this.state.poses[index].id][item]
     } else {
@@ -192,24 +192,24 @@ class SequenceForm extends React.Component {
   }
 
   spinalDirectionColor (index) {
-    if (index === 0 || Object.keys(this.state.poses[index]).length === 0) {
+    if (index === 0 || this.getPoseData(index, 'id') === '') {
       return '#FFFFFF'
     }
 
     // If the pose before this was an extension, find the most recent non-extension
     let indexToCompare = index - 1
     while (indexToCompare > 0 &&
-      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification === 'Extension') {
+      this.getPoseData(indexToCompare, 'spinal_classification') === 'Extension') {
       indexToCompare--
     }
 
     // If the pose is a forward bend or an extension or
-    if (this.poseLibrary[this.state.poses[index].id].spinal_classification === 'Extension' ||
-      this.poseLibrary[this.state.poses[index].id].spinal_classification === 'Forward Bend' ||
+    if (this.getPoseData(index, 'spinal_classification') === 'Extension' ||
+      this.getPoseData(index, 'spinal_classification') === 'Forward Bend' ||
       // If the pose before this was a forward bend or the same direction
-      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification === 'Forward Bend' ||
-      this.poseLibrary[this.state.poses[index].id].spinal_classification ===
-      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification
+      this.getPoseData(indexToCompare, 'spinal_classification') === 'Forward Bend' ||
+      this.getPoseData(index, 'spinal_classification') ===
+      this.getPoseData(indexToCompare, 'spinal_classification')
     ) {
       return '#FFFFFF'
     } else {
