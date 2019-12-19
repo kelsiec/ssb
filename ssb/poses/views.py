@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework import serializers
 from rest_framework.generics import ListCreateAPIView
 
-from .forms import EffectForm, PoseForm
+from .forms import PoseForm
 from .models import (
     ArmVariation,
     BodyPart,
@@ -79,17 +79,6 @@ def delete_pose(request):
                 except ObjectDoesNotExist:
                     pass
         return HttpResponse(json.dumps(pose_ids), content_type="application/json")
-    return HttpResponse('')
-
-
-def add_effect(request):
-    form = EffectForm(request.POST or None)
-    if request.POST:
-        if form.is_valid():
-            form.save()
-        else:
-            logger.error(form.errors)
-
     return HttpResponse('')
 
 

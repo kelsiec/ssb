@@ -2,7 +2,6 @@ from django.conf.urls import url
 
 from .views import (
     PoseListCreate,
-    add_effect,
     create_pose,
     delete_pose,
     get_arm_variations,
@@ -19,7 +18,6 @@ urlpatterns = [
     url(r'^poses/$', PoseListCreate.as_view(), name='get_poses'),
     url(r'^create_pose/submit/$', create_pose, name='create_pose'),
     url(r'^delete_pose/$', delete_pose, name='delete_pose'),
-    url(r'^add_effect/$', add_effect, name='add_effect'),
     url(r'^breath_directions/$', get_breath_directions, name='get_breath_directions'),
     url(r'^challenge_levels/$', get_challenge_levels, name='get_challenge_levels'),
     url(r'^position_classifications/$', get_position_classifications, name='get_position_classifications'),

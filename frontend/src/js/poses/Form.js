@@ -66,7 +66,7 @@ class PoseForm extends React.Component {
       return response.json()
     }.bind(this)).then(function (data) {
       showNotificationWithTimeout(this.props.dispatch, data.messages)
-    })
+    }.bind(this))
   }
 
   static loadBreathOptions (inputValue) {

@@ -2,7 +2,6 @@
 Django==2.2.4
 flake8==3.5.0
 psycopg2==2.7.5
-django-crispy-forms
 djangorestframework==3.9.4
 
 # Dev

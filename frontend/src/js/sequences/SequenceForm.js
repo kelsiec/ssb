@@ -182,17 +182,38 @@ class SequenceForm extends React.Component {
   breathDirectionColor (index) {
     if (this.state.poses[index].breath_direction === 2) {
       return '#F1948A'
-    } else if (
-      (
-        index < this.state.poses.length - 1 &&
-        this.state.poses[index].breath_direction === this.state.poses[index + 1].breath_direction) ||
-      (
-        index > 0 &&
-        this.state.poses[index].breath_direction === this.state.poses[index - 1].breath_direction)
+    } else if (index > 0 &&
+        this.state.poses[index].breath_direction === this.state.poses[index - 1].breath_direction
     ) {
       return '#FFFF88'
     } else {
       return '#FFFFFF'
+    }
+  }
+
+  spinalDirectionColor (index) {
+    if (index === 0 || Object.keys(this.state.poses[index]).length === 0) {
+      return '#FFFFFF'
+    }
+
+    // If the pose before this was an extension, find the most recent non-extension
+    let indexToCompare = index - 1
+    while (indexToCompare > 0 &&
+      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification === 'Extension') {
+      indexToCompare--
+    }
+
+    // If the pose is a forward bend or an extension or
+    if (this.poseLibrary[this.state.poses[index].id].spinal_classification === 'Extension' ||
+      this.poseLibrary[this.state.poses[index].id].spinal_classification === 'Forward Bend' ||
+      // If the pose before this was a forward bend or the same direction
+      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification === 'Forward Bend' ||
+      this.poseLibrary[this.state.poses[index].id].spinal_classification ===
+      this.poseLibrary[this.state.poses[indexToCompare].id].spinal_classification
+    ) {
+      return '#FFFFFF'
+    } else {
+      return '#F1948A'
     }
   }
 
@@ -239,7 +260,13 @@ class SequenceForm extends React.Component {
                           value: this.state.poses[index] != null ? this.state.poses[index].id : '',
                           label: this.getPoseData(index, 'english_name'),
                         }}
-                        styles={{ container: base => ({ ...base, flex: 1 }) }}
+                        styles={{
+                          container: base => ({ ...base, flex: 1 }),
+                          control: base => ({
+                            ...base,
+                            backgroundColor: this.spinalDirectionColor(index),
+                          }),
+                        }}
                       />
                       <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
                     </div>
