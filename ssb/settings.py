@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'crispy_forms',
     'rest_framework',
     'webpack_loader',
 
@@ -74,7 +73,7 @@ WSGI_APPLICATION = 'ssb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ssb',
         'USER': '',
         'PASSWORD': '',

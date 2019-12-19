@@ -55,14 +55,14 @@ class SequenceForm extends React.Component {
     this.cookies = new Cookies()
 
     this.sequenceId = this.props.match.params.id ? this.props.match.params.id : ''
-    this.poseLibrary = []
+    this.poseLibrary = [{ english_name: '', spinal_classification: '' }]
     this.breathDirections = ['Inhale', 'Exhale', 'Either']
 
     this.state = {
       loadingSequence: this.sequenceId !== '',
       loadingPoses: true,
       name: '',
-      poses: [],
+      poses: [{ id: -1, breath_direction: '' }],
     }
   }
 

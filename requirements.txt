@@ -1,8 +1,8 @@
 # Base
-Django==2.2.8
+Django==3.0.1
 flake8==3.5.0
 psycopg2==2.7.5
-djangorestframework==3.9.4
+djangorestframework==3.11.0
 
 # Dev
 django_debug_toolbar
