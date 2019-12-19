@@ -105,7 +105,7 @@ class SsbTable extends React.Component {
     order: 'asc',
     selected: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 10,
     title: '',
   }
 

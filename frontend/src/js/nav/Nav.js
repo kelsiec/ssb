@@ -35,15 +35,17 @@ class Nav extends React.Component {
           </div>
           <Divider />
           <List>
-            <NavLink to="/poses/view_poses" className='mdc-list-item'>
-              <ListItemText>Pose Library</ListItemText>
-            </NavLink>
-            <NavLink to="/poses/create_pose" className='mdc-list-item'>
-              <ListItemText primary="Submit a Pose" />
-            </NavLink>
-            <NavLink to="/sequences/" className='mdc-list-item'>
-              <ListItemText primary="Sequences" />
-            </NavLink>
+            <div onClick={() => this.handleDrawerClose()}>
+              <NavLink to="/poses/view_poses" className='mdc-list-item'>
+                <ListItemText>Pose Library</ListItemText>
+              </NavLink>
+              <NavLink to="/poses/create_pose" className='mdc-list-item'>
+                <ListItemText primary="Submit a Pose" />
+              </NavLink>
+              <NavLink to="/sequences/" className='mdc-list-item'>
+                <ListItemText primary="Sequences" />
+              </NavLink>
+            </div>
           </List>
         </Drawer>
         <IconButton
