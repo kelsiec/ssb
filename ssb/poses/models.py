@@ -129,10 +129,10 @@ class PoseVariation(models.Model):
     leg_variation = models.ForeignKey(LegVariation, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.sanskrit_name:
-            return "{} - {}".format(self.parent_pose, self.description)
+        if self.parent_pose.sanskrit_name:
+            return "{} - {}".format(self.parent_pose.sanskrit_name, self.description)
         else:
-            return self.english_name
+            return "{} - {}".format(self.parent_pose.english_name, self.description)
 
     def benefits_to_string(self):
         return self.effect_to_string(list(self.benefits.all()) + list(self.parent_pose.benefits.all()))

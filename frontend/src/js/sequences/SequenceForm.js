@@ -170,10 +170,9 @@ class SequenceForm extends React.Component {
     }))
   }
 
-  getPoseData (index, item) {
-    if (this.state.poses[index] != null && this.state.poses[index].id !== -1 &&
-      this.poseLibrary[this.state.poses[index].id] != null) {
-      return this.poseLibrary[this.state.poses[index].id][item]
+  getPoseData (id, item) {
+    if (id !== -1 && this.poseLibrary[id] != null) {
+      return this.poseLibrary[id][item]
     } else {
       return ''
     }
@@ -191,30 +190,91 @@ class SequenceForm extends React.Component {
     }
   }
 
-  spinalDirectionColor (index) {
-    if (index === 0 || this.getPoseData(index, 'id') === '') {
-      return '#FFFFFF'
-    }
+  // spinalDirectionColor (index) {
+  //   if (index === 0 || this.getPoseData(index, 'id') === '') {
+  //     return '#FFFFFF'
+  //   }
+  //
+  //   // If the pose before this was an extension, find the most recent non-extension
+  //   let indexToCompare = index - 1
+  //   while (indexToCompare > 0 &&
+  //     this.getPoseData(indexToCompare, 'spinal_classification') === 'Extension') {
+  //     indexToCompare--
+  //   }
+  //
+  //   // If the pose is a forward bend or an extension or
+  //   if (this.getPoseData(index, 'spinal_classification') === 'Extension' ||
+  //     this.getPoseData(index, 'spinal_classification') === 'Forward Bend' ||
+  //     // If the pose before this was a forward bend or the same direction
+  //     this.getPoseData(indexToCompare, 'spinal_classification') === 'Forward Bend' ||
+  //     this.getPoseData(index, 'spinal_classification') ===
+  //     this.getPoseData(indexToCompare, 'spinal_classification')
+  //   ) {
+  //     return '#FFFFFF'
+  //   } else {
+  //     return '#F1948A'
+  //   }
+  // }
 
-    // If the pose before this was an extension, find the most recent non-extension
-    let indexToCompare = index - 1
-    while (indexToCompare > 0 &&
-      this.getPoseData(indexToCompare, 'spinal_classification') === 'Extension') {
-      indexToCompare--
-    }
+  renderPose (index, flowIndex) {
+    const pose = flowIndex >= 0 ? this.state.poses[index][flowIndex] : this.state.poses[index]
 
-    // If the pose is a forward bend or an extension or
-    if (this.getPoseData(index, 'spinal_classification') === 'Extension' ||
-      this.getPoseData(index, 'spinal_classification') === 'Forward Bend' ||
-      // If the pose before this was a forward bend or the same direction
-      this.getPoseData(indexToCompare, 'spinal_classification') === 'Forward Bend' ||
-      this.getPoseData(index, 'spinal_classification') ===
-      this.getPoseData(indexToCompare, 'spinal_classification')
-    ) {
-      return '#FFFFFF'
-    } else {
-      return '#F1948A'
-    }
+    return <SortableItem style={{ width: '100%' }} key={'pose-li-' + index} index={index} value={
+      <div>
+        <div style={{ display: 'flex', width: '100%', marginBottom: 5 }}>
+          <Select
+            key={'pose-' + index}
+            name="poses"
+            placeholder="Poses"
+            options={
+              Object.entries(this.poseLibrary).map(([key, value]) => {
+                return { value: key, label: value.english_name }
+              })
+            }
+            onChange={(event) => this.handlePoseChange(event, index)}
+            value={{
+              value: pose.id !== -1 ? pose.id : '',
+              label: this.getPoseData(pose.id, 'english_name'),
+            }}
+            styles={{
+              container: base => ({ ...base, flex: 1 }),
+              // control: base => ({
+              //   ...base,
+              //   backgroundColor: this.spinalDirectionColor(index),
+              // }),
+            }}
+          />
+          <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
+        </div>
+        {pose !== {} &&
+        <div style={{ width: '33%' }}>
+          <Select
+            key={'pose-breath-direction-' + index}
+            name="pose-breath-direction"
+            placeholder="Breath Direction"
+            styles={{
+              container: base => ({ ...base, flex: 1 }),
+              control: base => ({
+                ...base,
+                backgroundColor: this.breathDirectionColor(index),
+              }),
+            }}
+            options={
+              this.breathDirections.filter((value, _) => value !== 'Either').map((value, index) => {
+                return { value: index, label: value }
+              })
+            }
+            onChange={(event) => this.handleBreathChange(event, index)}
+            value={{
+              value: pose != null ? pose.breath_direction : '',
+              label: pose != null ?
+                this.breathDirections[pose.breath_direction] : '',
+            }}
+          />
+        </div>
+        }
+      </div>
+    }/>
   }
 
   render () {
@@ -243,62 +303,9 @@ class SequenceForm extends React.Component {
             </div>
             <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
               {this.state.poses.map((pose, index) => (
-                <SortableItem style={{ width: '100%' }} key={'pose-li-' + index} index={index} value={
-                  <div>
-                    <div style={{ display: 'flex', width: '100%', marginBottom: 5 }}>
-                      <Select
-                        key={'pose-' + index}
-                        name="poses"
-                        placeholder="Poses"
-                        options={
-                          Object.entries(this.poseLibrary).map(([key, value]) => {
-                            return { value: key, label: value.english_name }
-                          })
-                        }
-                        onChange={(event) => this.handlePoseChange(event, index)}
-                        value={{
-                          value: this.state.poses[index] != null ? this.state.poses[index].id : '',
-                          label: this.getPoseData(index, 'english_name'),
-                        }}
-                        styles={{
-                          container: base => ({ ...base, flex: 1 }),
-                          control: base => ({
-                            ...base,
-                            backgroundColor: this.spinalDirectionColor(index),
-                          }),
-                        }}
-                      />
-                      <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
-                    </div>
-                    {this.state.poses[index] !== {} &&
-                    <div style={{ width: '33%' }}>
-                      <Select
-                        key={'pose-breath-direction-' + index}
-                        name="pose-breath-direction"
-                        placeholder="Breath Direction"
-                        styles={{
-                          container: base => ({ ...base, flex: 1 }),
-                          control: base => ({
-                            ...base,
-                            backgroundColor: this.breathDirectionColor(index),
-                          }),
-                        }}
-                        options={
-                          this.breathDirections.filter((value, _) => value !== 'Either').map((value, index) => {
-                            return { value: index, label: value }
-                          })
-                        }
-                        onChange={(event) => this.handleBreathChange(event, index)}
-                        value={{
-                          value: this.state.poses[index] != null ? this.state.poses[index].breath_direction : '',
-                          label: this.state.poses[index] != null ?
-                            this.breathDirections[this.state.poses[index].breath_direction] : '',
-                        }}
-                      />
-                    </div>
-                    }
-                  </div>
-                }/>
+                Array.isArray(pose) ?
+                  pose.map((flowPose, flowIndex) => (this.renderPose(index, flowIndex))) :
+                  this.renderPose(index, -1)
               ))}
             </SortableContainer>
             <Button onClick={this.handleAddPose} color="secondary">
