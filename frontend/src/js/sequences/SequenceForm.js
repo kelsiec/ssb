@@ -107,19 +107,49 @@ class SequenceForm extends React.Component {
     this.setState({ name: event.target.value })
   }
 
-  handleAddPose = () => {
+  handleAddPose = (flowIndex = -1) => {
+    if (flowIndex >= 0) {
+      const fuckingSideEffects = this.state.poses
+      fuckingSideEffects[flowIndex].push({ id: -1, breath_direction: '' })
+      this.setState({
+        poses: fuckingSideEffects,
+      })
+    } else {
+      this.setState({
+        poses: this.state.poses.concat({ id: -1, breath_direction: '' }),
+      })
+    }
+  }
+
+  handleAddFlow = () => {
+    const fuckingSideEffects = this.state.poses
+    fuckingSideEffects.push([{ id: -1, breath_direction: '' }])
     this.setState({
-      poses: this.state.poses.concat({ id: -1, breath_direction: '' }),
+      poses: fuckingSideEffects,
     })
   }
 
-  handlePoseChange = (event, index) => {
+  handlePoseChange = (event, index, flowIndex) => {
     this.setState({
       poses: this.state.poses.map((item, mIndex) => {
-        if (index !== mIndex) return item
-        return {
-          id: event.value,
-          breath_direction: this.poseLibrary[event.value].breath,
+        if (index !== mIndex) {
+          return item
+        } else if (flowIndex >= 0) {
+          return item.map((poseInFlow, indexInFlow) => {
+            if (indexInFlow !== flowIndex) {
+              return poseInFlow
+            } else {
+              return {
+                id: event.value,
+                breath_direction: this.poseLibrary[event.value].breath,
+              }
+            }
+          })
+        } else {
+          return {
+            id: event.value,
+            breath_direction: this.poseLibrary[event.value].breath,
+          }
         }
       }),
     })
@@ -216,6 +246,21 @@ class SequenceForm extends React.Component {
   //   }
   // }
 
+  renderFlow (index) {
+    return <SortableItem style={{ width: '100%' }} key={'pose-li-' + index} index={index} value={
+      <div key={'flow-div-' + index}>
+        {this.state.poses[index].map((flowPose, flowIndex) => {
+          return <div key={'flow-div-' + index + '-pose-div-' + flowIndex} >
+            {this.renderPose(index, flowIndex)}
+          </div>
+        })}
+        <Button onClick={() => this.handleAddPose(index)} color="secondary" style={{ flex: 1 }}>
+          Add Pose
+        </Button>
+      </div>
+    }/>
+  }
+
   renderPose (index, flowIndex) {
     const pose = flowIndex >= 0 ? this.state.poses[index][flowIndex] : this.state.poses[index]
 
@@ -231,7 +276,7 @@ class SequenceForm extends React.Component {
                 return { value: key, label: value.english_name }
               })
             }
-            onChange={(event) => this.handlePoseChange(event, index)}
+            onChange={(event) => this.handlePoseChange(event, index, flowIndex)}
             value={{
               value: pose.id !== -1 ? pose.id : '',
               label: this.getPoseData(pose.id, 'english_name'),
@@ -304,13 +349,18 @@ class SequenceForm extends React.Component {
             <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
               {this.state.poses.map((pose, index) => (
                 Array.isArray(pose) ?
-                  pose.map((flowPose, flowIndex) => (this.renderPose(index, flowIndex))) :
+                  this.renderFlow(index) :
                   this.renderPose(index, -1)
               ))}
             </SortableContainer>
-            <Button onClick={this.handleAddPose} color="secondary">
-              Add Pose
-            </Button>
+            <div style={{ display: 'flex', width: '25%' }}>
+              <Button onClick={this.handleAddPose} color="secondary" style={{ flex: 1 }}>
+                Add Pose
+              </Button>
+              <Button onClick={this.handleAddFlow} color="secondary" style={{ flex: 2 }}>
+                Add Pose Flow
+              </Button>
+            </div>
             <div className="container" style={{ display: 'flex' }}>
               <Button name="save_pose" variant="contained" color="primary" type="submit">
                 Submit
