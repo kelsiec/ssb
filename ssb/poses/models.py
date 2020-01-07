@@ -63,10 +63,13 @@ class Pose(models.Model):
     time = models.DateTimeField(auto_now=True)
     english_name = models.CharField(max_length=128, unique=True)
     sanskrit_name = models.CharField(max_length=128, unique=True, blank=True, null=True)
+
     spinal_classification = models.IntegerField(choices=SPINAL_CLASSIFICATION_CHOICES)
     position_classification = models.IntegerField(choices=POSITION_CLASSIFICATION_CHOICES)
     challenge_level = models.IntegerField(choices=CHALLENGE_LEVEL_CHOICES)
     breath = models.IntegerField(choices=BREATH_CHOICES)
+    is_flow = models.BooleanField()
+
     benefits = models.ManyToManyField(Effect, related_name='pose_benefits')
     preparation = models.ManyToManyField(Effect, related_name='pose_prepartion_requirements', blank=True)
     compensation = models.ManyToManyField(Effect, related_name='pose_compensation_requirements', blank=True)

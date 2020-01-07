@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
 
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import DragHandle from '@material-ui/icons/DragHandle'
@@ -24,7 +27,7 @@ import { showNotificationWithTimeout } from '../Messages'
 
 const Drag = sortableHandle(() => <DragHandle/>)
 
-const SortableItem = sortableElement(({ value }) => (
+const SortableItem = sortableElement(({ value, onDelete }) => (
   <div className="container" style={{
     width: '50%',
     padding: 20,
@@ -33,7 +36,24 @@ const SortableItem = sortableElement(({ value }) => (
     borderSpacing: 20,
     borderRadius: 10,
   }}>
-    <Drag/>
+    <div style={{ display: 'flex', width: '100%' }}>
+      <Drag styles={{ flex: 1 }}/>
+      <RadioGroup aria-label="position" name="position" value={value} row style={{ flex: 1, justifyContent: 'center' }}>
+        <FormControlLabel
+          value="stay"
+          control={<Radio color="primary" />}
+          label="Stay"
+          labelPlacement="start"
+        />
+        <FormControlLabel
+          value="repeat"
+          control={<Radio color="primary" />}
+          label="Repeat"
+          labelPlacement="start"
+        />
+      </RadioGroup>
+      <DeleteIcon onClick={onDelete} styles={{ flex: 1, alignSelf: 'flex-end' }}/>
+    </div>
     {value}
   </div>
 ))
@@ -243,7 +263,7 @@ class SequenceForm extends React.Component {
             </div>
             <SortableContainer onSortEnd={this.onSortEnd} useDragHandle>
               {this.state.poses.map((pose, index) => (
-                <SortableItem style={{ width: '100%' }} key={'pose-li-' + index} index={index} value={
+                <SortableItem style={{ width: '100%' }} key={'pose-li-' + index} index={index} onDelete={() => this.handlePoseRemove(index)} value={
                   <div>
                     <div style={{ display: 'flex', width: '100%', marginBottom: 5 }}>
                       <Select
@@ -261,21 +281,20 @@ class SequenceForm extends React.Component {
                           label: this.getPoseData(index, 'english_name'),
                         }}
                         styles={{
-                          container: base => ({ ...base, flex: 1 }),
+                          container: base => ({ ...base, flex: 2 }),
                           control: base => ({
                             ...base,
                             backgroundColor: this.spinalDirectionColor(index),
                           }),
                         }}
                       />
-                      <DeleteIcon onClick={() => this.handlePoseRemove(index)}/>
                     </div>
                     {this.state.poses[index] !== {} &&
-                    <div style={{ width: '33%' }}>
+                    <div style={{ display: 'flex', width: '100%' }}>
                       <Select
                         key={'pose-breath-direction-' + index}
-                        name="pose-breath-direction"
-                        placeholder="Breath Direction"
+                        name='pose-breath-direction'
+                        placeholder='Breath Direction'
                         styles={{
                           container: base => ({ ...base, flex: 1 }),
                           control: base => ({
@@ -295,8 +314,16 @@ class SequenceForm extends React.Component {
                             this.breathDirections[this.state.poses[index].breath_direction] : '',
                         }}
                       />
-                    </div>
-                    }
+                      <div style={{ flex: 1 }} />
+                      <TextField
+                        type='number'
+                        label='Duration'
+                        key={'pose-duration-' + index}
+                        name='pose-duration'
+                        required
+                        styles={{ flex: 1, marginLeft: 'auto' }}
+                      />
+                    </div>}
                   </div>
                 }/>
               ))}

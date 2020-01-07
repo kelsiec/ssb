@@ -49,3 +49,4 @@ class OrderedPose(models.Model):
     sequence = models.ForeignKey(Sequence, on_delete=models.CASCADE)
     pose = models.ForeignKey(Pose, on_delete=models.CASCADE)
     breath_override = models.IntegerField(choices=Pose.BREATH_CHOICES[0:-1])
+    duration = models.PositiveIntegerField()
